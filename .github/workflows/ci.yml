@@ -21,3 +21,6 @@ jobs:
 
       - name: CI (sync, bundled snapshot, tests)
         run: npm run ci
+
+      - name: Verify publish tarball
+        run: npm pack --dry-run

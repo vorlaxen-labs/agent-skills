@@ -35,4 +35,5 @@ Reference for the **Vorlaxen Agent Skills loader** — [@vorlaxen-labs/agent-ski
 ## Content reference
 
 - [Included skills](included-skills.md) — bundled global standards only
-- [Release (maintainers)](release.md) — npm publish workflow
+- [Release (maintainers)](release.md) — overview
+- [Publishing](PUBLISHING.md) — semantic-release, Trusted Publishing (same as bar-js)

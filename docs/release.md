@@ -1,13 +1,15 @@
 # Release (maintainers)
 
-Publish to npm via GitHub tag. Requires `NPM_TOKEN` repository secret.
+Publishing is automated on **`main`** via semantic-release and the **Publish Package** workflow — same model as [@vorlaxen-labs/bar-js](https://github.com/vorlaxen-labs/bar-js).
 
-```bash
-git tag v3.0.0
-git push origin v3.0.0
-```
+See **[PUBLISHING.md](./PUBLISHING.md)** for Trusted Publishing setup, conventional commits, and troubleshooting.
 
-CI runs checks and tests, then `npm publish` and creates a GitHub Release.
+Quick path after setup:
+
+1. Merge to `main` with a conventional commit (`fix:`, `feat:`, or breaking change).
+2. CI passes → **Publish Package** bumps version, publishes npm, creates GitHub Release.
+
+Do **not** rely on manual `git tag v*` pushes; tag-based `release.yml` was removed in favor of `publish.yml`.
 
 ## Repo layout
 
@@ -23,7 +25,7 @@ Agent-Skills/
 │   ├── source/            # bundled + GitHub fetch + cache
 │   ├── conflict/          # detect + resolve + per-path policy
 │   └── telemetry/         # anonymous usage events + config
-├── bundled/               # Snapshot shipped with npm package
+├── bundled/               # Snapshot shipped with npm package (built in CI)
 ├── rules/global.mdc       # Cursor always-on (synced with AGENTS.md)
 ├── skills/global/         # Cursor skill (synced with AGENTS.md)
 ├── docs/                  # CLI documentation + JSON schemas

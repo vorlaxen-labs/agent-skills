@@ -13,6 +13,7 @@ desktop.ini
 # Environment & secrets
 .env
 .env.*
+.npmrc
 !.env.example
 *.pem
 *.key
@@ -35,3 +36,4 @@ dist/
 bundled/
 build/
 *.tsbuildinfo
+*.tgz

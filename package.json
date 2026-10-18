@@ -17,6 +17,10 @@
     "bundled",
     "docs/schemas"
   ],
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
   "scripts": {
     "build": "node scripts/bundle-skills.mjs && tsc",
     "dev": "tsx src/cli.ts",
@@ -25,7 +29,8 @@
     "check": "npm run check:sync && npm run build && npm run check:bundled",
     "check:bundled": "node scripts/check-bundled.mjs",
     "ci": "npm run check && npm test",
-    "prepublishOnly": "npm run build && npm run ci"
+    "prepublishOnly": "npm run build && npm run ci",
+    "release:dry-run": "semantic-release --dry-run"
   },
   "engines": {
     "node": ">=18"
@@ -57,7 +62,13 @@
     "commander": "^13.1.0"
   },
   "devDependencies": {
+    "@semantic-release/commit-analyzer": "^13.0.1",
+    "@semantic-release/git": "^10.0.1",
+    "@semantic-release/github": "^12.0.6",
+    "@semantic-release/npm": "^13.1.5",
+    "@semantic-release/release-notes-generator": "^14.1.0",
     "@types/node": "^22.20.1",
+    "semantic-release": "^25.0.3",
     "tsx": "^4.19.4",
     "typescript": "^5.8.3"
   }
