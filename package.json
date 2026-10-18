@@ -1,6 +1,6 @@
 {
   "name": "@vorlaxen-labs/agent-skills",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "Vorlaxen Agent Skills CLI — init global engineering standards, add and update skills from any GitHub repo for Cursor, Claude Code, Copilot, and more",
   "author": "Vorlaxen Labs",
   "license": "MIT",
