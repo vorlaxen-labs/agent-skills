@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "id": "in-repo-hub",
+  "skills": {
+    "bar-js": {
+      "source": "./skills/bar-js",
+      "description": "Fixture skill with in-repo relative source (vorlaxen-skills-hub layout)."
+    },
+    "huk-js": {
+      "source": "./skills/huk-js",
+      "description": "Second in-repo skill for multi-alias hub installs."
+    }
+  }
+}

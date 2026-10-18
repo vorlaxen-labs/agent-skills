@@ -6,11 +6,13 @@ import { fileURLToPath } from "node:url";
 import { describe, it } from "node:test";
 import {
   catalogEntrySkillName,
+  isInsideHubRepoSource,
   normalizeLockSource,
   resolveEntrySourcePath,
   resolveHubSkillInstall,
   sourcesMatch,
 } from "../../src/hub/resolve-skill.js";
+import { parseSource } from "../../src/source/parse-source.js";
 import type { HubSkillEntry, HubSubscription } from "../../src/hub/types.js";
 
 const fixtureRoot = join(
@@ -52,6 +54,45 @@ describe("resolve-skill helpers", () => {
     };
     const resolved = resolveEntrySourcePath("../sample-pack", sub, cwd);
     assert.ok(resolved.includes("sample-pack"));
+  });
+
+  it("resolveEntrySourcePath maps ./ paths onto a GitHub hub repo", () => {
+    const sub: HubSubscription = {
+      hubId: "vorlaxen-skills-hub",
+      source: "vorlaxen-labs/vorlaxen-skills-hub",
+      ref: "main",
+      manifestPath: "agent-skills.hub.json",
+      addedAt: new Date().toISOString(),
+    };
+    const resolved = resolveEntrySourcePath("./skills/bar-js", sub, "/tmp/project", "main");
+    const parsed = parseSource(resolved, "main");
+    assert.equal(parsed.type, "github");
+    if (parsed.type !== "github") return;
+    assert.equal(parsed.owner, "vorlaxen-labs");
+    assert.equal(parsed.repo, "vorlaxen-skills-hub");
+    assert.equal(parsed.ref, "main");
+    assert.equal(parsed.subpath, "skills/bar-js");
+    assert.equal(resolved.includes("/tmp/project"), false);
+  });
+
+  it("resolveEntrySourcePath rejects ./ paths that leave a GitHub hub repo", () => {
+    const sub: HubSubscription = {
+      hubId: "vorlaxen-skills-hub",
+      source: "vorlaxen-labs/vorlaxen-skills-hub",
+      ref: "main",
+      manifestPath: "agent-skills.hub.json",
+      addedAt: new Date().toISOString(),
+    };
+    assert.throws(
+      () => resolveEntrySourcePath("./../outside", sub, "/tmp/project", "main"),
+      /outside the hub repository/i,
+    );
+  });
+
+  it("isInsideHubRepoSource accepts in-repo relative paths only", () => {
+    assert.equal(isInsideHubRepoSource("./skills/bar-js"), true);
+    assert.equal(isInsideHubRepoSource("../sample-pack"), false);
+    assert.equal(isInsideHubRepoSource("vorlaxen-labs/vorlaxen-skills-hub"), false);
   });
 });
 

@@ -1,6 +1,6 @@
 import type { SkillLockEntry } from "../lock/skills-lock.js";
 import type { HubCatalog, HubSubscription } from "./types.js";
-import { catalogEntrySkillName, sourcesMatch } from "./resolve-skill.js";
+import { catalogEntrySkillName, isInsideHubRepoSource, sourcesMatch } from "./resolve-skill.js";
 import { loadHubCatalog } from "./catalog.js";
 
 export interface HubLockMatch {
@@ -15,12 +15,19 @@ export function findCatalogMatchesForLockEntry(
   entry: SkillLockEntry,
   hubId: string,
   catalog: HubCatalog,
+  hubSource?: string,
 ): { alias: string } | null {
   for (const [alias, skillEntry] of Object.entries(catalog.skills)) {
     const skillName = catalogEntrySkillName(alias, skillEntry);
     if (skillName !== lockName) continue;
-    if (!sourcesMatch(entry.source, skillEntry.source)) continue;
-    return { alias };
+    if (sourcesMatch(entry.source, skillEntry.source)) return { alias };
+    if (
+      hubSource &&
+      isInsideHubRepoSource(skillEntry.source) &&
+      sourcesMatch(entry.source, hubSource)
+    ) {
+      return { alias };
+    }
   }
   return null;
 }
@@ -50,7 +57,13 @@ export async function matchLockSkillsToHubs(options: {
     }
 
     for (const [lockName, entry] of Object.entries(options.lockSkills)) {
-      const match = findCatalogMatchesForLockEntry(lockName, entry, sub.hubId, catalog);
+      const match = findCatalogMatchesForLockEntry(
+        lockName,
+        entry,
+        sub.hubId,
+        catalog,
+        sub.source,
+      );
       if (match) {
         candidates.push({
           lockSkillName: lockName,

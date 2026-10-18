@@ -66,6 +66,31 @@ describe("findCatalogMatchesForLockEntry", () => {
     assert.equal(match?.alias, "alias");
   });
 
+  it("matches in-repo relative sources against the hub repository", () => {
+    const catalog: HubCatalog = {
+      version: 1,
+      id: "vorlaxen-skills-hub",
+      skills: {
+        "bar-js": { source: "./skills/bar-js" },
+      },
+    };
+    const entry: SkillLockEntry = {
+      source: "vorlaxen-labs/vorlaxen-skills-hub",
+      sourceType: "github",
+      skillPath: "skills/bar-js/SKILL.md",
+      computedHash: "abc",
+      ref: "main",
+    };
+    const match = findCatalogMatchesForLockEntry(
+      "bar-js",
+      entry,
+      "vorlaxen-skills-hub",
+      catalog,
+      "vorlaxen-labs/vorlaxen-skills-hub",
+    );
+    assert.equal(match?.alias, "bar-js");
+  });
+
   it("returns null when source or name differ", () => {
     const entry: SkillLockEntry = {
       source: "other/repo",
