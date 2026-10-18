@@ -65,7 +65,7 @@ export function registerHubStatusCommand(hub: Command): void {
       for (const r of lockRows) {
         if (r.hubMatch === "possible") {
           console.log(
-            `  ${r.skill}  ${r.source}  — hub'dan kurulu olabilir (${r.hubId}/${r.alias})`,
+            `  ${r.skill}  ${r.source}  — may match hub (${r.hubId}/${r.alias})`,
           );
         } else {
           console.log(`  ${r.skill}  ${r.source}`);

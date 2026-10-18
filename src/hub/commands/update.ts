@@ -86,13 +86,13 @@ export function registerHubUpdateCommand(hub: Command): void {
     }
 
     console.log(
-      `\n${subscriptions.length} hub katalog cache yenilendi.${opts.skills ? "" : " Kurulu skill dosyaları değişmedi; skill güncellemek için: hub update --skills"}`,
+      `\nRefreshed catalog cache for ${subscriptions.length} hub(s).${opts.skills ? "" : " Installed skill files were not changed; to refresh them run: hub update --skills"}`,
     );
     if (opts.skills) {
       if (skillsUpdated.length > 0) {
-        console.log(` ${skillsUpdated.length} skill güncellendi: ${skillsUpdated.join(", ")}`);
+        console.log(` Updated ${skillsUpdated.length} skill(s): ${skillsUpdated.join(", ")}`);
       } else {
-        console.log(" Eşleşen kurulu skill bulunamadı.");
+        console.log(" No matching installed skills found.");
       }
     }
     console.log("");

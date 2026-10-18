@@ -28,14 +28,14 @@ export async function runHubDiff(options: {
       }
     }
   } else {
-    notes.push("Önbellek atlandı; diff yalnızca cache vs remote modunda anlamlıdır.");
+    notes.push("Cache skipped; diff is only meaningful when comparing cache vs remote.");
   }
 
   const remote = await fetchHubCatalogRaw(sub, options.cwd, options.noCache ?? false);
   parseHubCatalog(JSON.parse(remote));
 
   if (cached === null && !options.noCache) {
-    notes.push("Cache yoktu, remote indirildi; kalıcı cache için: hub update");
+    notes.push("No cache on disk; fetched remote only. Run hub update to persist cache.");
   }
 
   if (options.noCache || cached === null) {

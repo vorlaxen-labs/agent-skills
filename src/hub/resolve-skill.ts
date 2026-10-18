@@ -102,7 +102,7 @@ export async function resolveHubSkillInstall(options: {
 
   if (!entry.skill && skill.name !== alias) {
     throw new Error(
-      `Hub alias '${alias}' ile SKILL.md name '${skill.name}' uyuşmuyor; manifestte skill alanı belirtin.`,
+      `Hub alias '${alias}' does not match SKILL.md name '${skill.name}'; set "skill" on the catalog entry.`,
     );
   }
 
