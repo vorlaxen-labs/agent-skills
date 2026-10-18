@@ -1,13 +1,13 @@
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { SKILLS, type Platform } from "../catalog.js";
+import { SKILLS, type Platform } from "../core/bundled-catalog.js";
 import { detectConflicts } from "../conflict/detect.js";
 import { defaultPolicyOverrides, normalizePolicyV2 } from "../conflict/path-policy.js";
 import { policyFromManifest, resolvePolicy } from "../conflict/resolve.js";
 import type { AppendOrder, ConflictPolicyV2, ConflictStrategy } from "../conflict/types.js";
-import { logVerbose } from "../output.js";
+import { logVerbose } from "../core/output.js";
 import { resolveSource, type RemoteRef } from "../source/resolve.js";
-import { getPackageVersion } from "../version.js";
+import { getPackageVersion } from "../core/version.js";
 import { collectPaths } from "./collect-paths.js";
 import { executePlan } from "./executor.js";
 import {
@@ -89,7 +89,7 @@ export async function runInstall(
 
   logVerbose(`Fetching paths: ${paths.join(", ")}`);
   if (showFetchMessage) {
-    const { getOutputOptions } = await import("../output.js");
+    const { getOutputOptions } = await import("../core/output.js");
     if (!getOutputOptions().json) console.log("\nFetching selected skills…");
   }
 

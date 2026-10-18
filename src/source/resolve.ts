@@ -1,5 +1,5 @@
 import { statSync } from "node:fs";
-import { GITHUB } from "../catalog.js";
+import { GITHUB } from "../core/bundled-catalog.js";
 import { createBundledSource } from "./bundled.js";
 import { createGitHubSource, type GitHubSourceOptions } from "./github.js";
 import type { SkillSource } from "./types.js";

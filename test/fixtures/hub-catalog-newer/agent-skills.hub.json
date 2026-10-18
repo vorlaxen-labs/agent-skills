@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "id": "newer-hub",
+  "skills": {
+    "demo-skill": {
+      "source": "../sample-pack",
+      "description": "Demo skill for hub match tests"
+    }
+  }
+}

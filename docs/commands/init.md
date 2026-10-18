@@ -28,8 +28,8 @@ Global flag: `--no-telemetry` — disable anonymous telemetry for this run.
 ## Examples
 
 ```bash
-# Cursor with web and bar-js skills
-npx @vorlaxen-labs/agent-skills init --platform cursor --skills global,web-frontend,bar-js
+# Cursor with bundled global only
+npx @vorlaxen-labs/agent-skills init --platform cursor --skills global -y
 
 # Latest from GitHub main branch
 npx @vorlaxen-labs/agent-skills init --remote=main

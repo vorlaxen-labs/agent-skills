@@ -48,7 +48,17 @@ export function extractCommandProperties(
 
   if (Array.isArray(commandOpts.skills)) {
     properties.skills_count = commandOpts.skills.length;
-  } else if (commandName === "add" || commandName === "remove") {
+  } else if (commandName === "add") {
+    const fromFlag = commandOpts.skill;
+    if (Array.isArray(fromFlag) && fromFlag.length > 0) {
+      properties.skills_count = fromFlag.length;
+    } else {
+      properties.skills_count = Math.max(0, args.length - 1);
+    }
+    if (typeof args[0] === "string") {
+      properties.source = args[0];
+    }
+  } else if (commandName === "remove") {
     properties.skills_count = args.length;
   }
 

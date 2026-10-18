@@ -1,4 +1,4 @@
-import type { Platform } from "../../catalog.js";
+import type { Platform } from "../../core/bundled-catalog.js";
 import type { InstallContext, Planner } from "../types.js";
 import { planAgentsMd } from "./agents-md.js";
 import { planClaudeCode } from "./claude-code.js";

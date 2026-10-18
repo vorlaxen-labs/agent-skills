@@ -1,7 +1,7 @@
 import { homedir } from "node:os";
 import { join } from "node:path";
 import { randomUUID } from "node:crypto";
-import { pathExists, readTextFile, writeTextFile } from "../fs.js";
+import { pathExists, readTextFile, writeTextFile } from "../core/fs.js";
 
 export const TELEMETRY_CONFIG_SCHEMA_VERSION = 1;
 

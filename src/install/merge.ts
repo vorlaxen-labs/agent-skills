@@ -1,4 +1,4 @@
-import { stripWatermark } from "../markdown.js";
+import { stripWatermark } from "../core/markdown.js";
 import type { AppendOrder } from "../conflict/types.js";
 
 export const SECTION_SEPARATOR = "\n\n---\n\n";

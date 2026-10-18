@@ -5,8 +5,8 @@ You can copy files directly without the CLI.
 ## AGENTS.md (most tools)
 
 ```bash
-git clone https://github.com/vorlaxen-labs/agent-skills.git
-cp agent-skills/AGENTS.md /path/to/your-project/
+git clone https://github.com/vorlaxen-labs/Agent-Skills.git
+cp Agent-Skills/AGENTS.md /path/to/your-project/
 ```
 
 [`AGENTS.md`](../AGENTS.md) follows the [open AGENTS.md standard](https://agents.md/) — Claude Code, Cursor, Copilot, and others pick it up from the project root.
@@ -16,12 +16,11 @@ cp agent-skills/AGENTS.md /path/to/your-project/
 For always-on rules and on-demand skills:
 
 ```bash
-cp agent-skills/rules/global.mdc ~/.cursor/rules/
-cp -r agent-skills/skills/global ~/.cursor/skills/
-# optional: cp -r agent-skills/skills/web/* ~/.cursor/skills/
-# optional: cp -r agent-skills/skills/audits/* ~/.cursor/skills/
-# optional: cp -r agent-skills/skills/libraries/* ~/.cursor/skills/
+cp Agent-Skills/rules/global.mdc ~/.cursor/rules/
+cp -r Agent-Skills/skills/global ~/.cursor/skills/
 ```
+
+For other skills, copy folders from an external skill pack or run [`add`](commands/add.md).
 
 ## Claude Code
 
@@ -32,7 +31,7 @@ cp AGENTS.md ~/.claude/CLAUDE.md
 
 ## Other tools
 
-Paste `AGENTS.md` into custom instructions. Append a skill's body (skip YAML frontmatter) when you need web or library modules.
+Paste `AGENTS.md` into custom instructions. For additional skills, paste each skill's markdown body (skip YAML frontmatter) or use the CLI to install under `.agents/skills/`.
 
 ---
 

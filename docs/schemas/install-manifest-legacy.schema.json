@@ -1,0 +1,109 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/vorlaxen-labs/Agent-Skills/main/docs/schemas/install-manifest-legacy.schema.json",
+  "title": "Vorlaxen Agent Skills install manifest (legacy v1–v2)",
+  "description": "Older bundled manifests still readable by the CLI (migrated to v3 on read). Do not use for new installs.",
+  "oneOf": [
+    {
+      "type": "object",
+      "additionalProperties": true,
+      "required": ["platform", "skills", "written"],
+      "properties": {
+        "schemaVersion": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 2
+        },
+        "cliVersion": { "type": "string" },
+        "platform": {
+          "type": "string",
+          "enum": ["agents-md", "cursor", "claude-code", "copilot"]
+        },
+        "skills": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "remote": {
+          "oneOf": [
+            { "type": "null" },
+            { "type": "boolean" },
+            { "type": "string" }
+          ]
+        },
+        "installedAt": { "type": "string" },
+        "conflictPolicy": {
+          "oneOf": [
+            {
+              "type": "object",
+              "required": ["strategy"],
+              "properties": {
+                "strategy": {
+                  "type": "string",
+                  "enum": ["replace", "append", "skip", "inherit"]
+                },
+                "appendOrder": {
+                  "type": "string",
+                  "enum": ["existing-first", "vorlaxen-first"]
+                }
+              },
+              "additionalProperties": true
+            },
+            {
+              "type": "object",
+              "required": ["default"],
+              "properties": {
+                "default": {
+                  "type": "string",
+                  "enum": ["replace", "append", "skip", "inherit"]
+                },
+                "appendOrder": {
+                  "type": "string",
+                  "enum": ["existing-first", "vorlaxen-first"]
+                },
+                "overrides": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "string",
+                    "enum": ["replace", "append", "skip", "inherit"]
+                  }
+                }
+              },
+              "additionalProperties": true
+            }
+          ]
+        },
+        "written": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "skipped": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    },
+    {
+      "description": "Implicit schemaVersion 1 when field is omitted",
+      "type": "object",
+      "additionalProperties": true,
+      "required": ["platform", "skills", "written"],
+      "not": {
+        "required": ["schemaVersion"]
+      },
+      "properties": {
+        "platform": {
+          "type": "string",
+          "enum": ["agents-md", "cursor", "claude-code", "copilot"]
+        },
+        "skills": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "written": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    }
+  ]
+}

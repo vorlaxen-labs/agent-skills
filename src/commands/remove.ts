@@ -1,9 +1,8 @@
 import { confirm } from "@inquirer/prompts";
 import { Command } from "commander";
-import { SKILLS } from "../catalog.js";
-import { deleteFile, pathExists, removeEmptyDir } from "../fs.js";
+import { SKILLS } from "../core/bundled-catalog.js";
+import { removeExternalSkills } from "../install/external-skill.js";
 import {
-  getManifestPath,
   readInstallManifest,
   removeSkillsFromManifest,
   writeInstallManifest,
@@ -14,8 +13,9 @@ import {
   agentRootPath,
   pathsForSkillRemoval,
 } from "../install/skill-paths.js";
-import { printUninstallResult, setOutputOptions } from "../output.js";
-import { parseSkillIds } from "../validate.js";
+import { readSkillsLock } from "../lock/skills-lock.js";
+import { printUninstallResult, setOutputOptions } from "../core/output.js";
+import { parseRemoveSkillIds, SKILL_IDS, ValidationError } from "../core/validate.js";
 
 export interface RemoveOptions {
   cwd?: string;
@@ -34,25 +34,72 @@ export async function runRemove(options: RemoveOptions): Promise<void> {
     json: options.json ?? false,
   });
 
-  const manifest = await readInstallManifest(cwd);
-  const skillIds = options.skillIds.filter((id) => manifest.skills.includes(id));
+  const lock = await readSkillsLock(cwd);
+  const externalNames = options.skillIds.filter((id) => lock.skills[id]);
+  const bundledCandidates = options.skillIds.filter((id) => !lock.skills[id]);
 
-  if (skillIds.length === 0) {
+  const removedExternal = externalNames.length
+    ? await removeExternalSkills(cwd, externalNames, options.dryRun)
+    : [];
+
+  if (bundledCandidates.length === 0) {
+    if (removedExternal.length > 0) {
+      printUninstallResult({
+        removed: removedExternal.map((n) => `.agents/skills/${n}`),
+        skipped: [],
+        dryRun: options.dryRun ?? false,
+      });
+    } else {
+      console.log("\nNone of the requested skills are installed.\n");
+    }
+    return;
+  }
+
+  let manifest;
+  try {
+    manifest = await readInstallManifest(cwd);
+  } catch {
+    if (removedExternal.length > 0) {
+      printUninstallResult({
+        removed: removedExternal.map((n) => `.agents/skills/${n}`),
+        skipped: [],
+        dryRun: options.dryRun ?? false,
+      });
+      return;
+    }
+    const unknown = bundledCandidates.filter((id) => !SKILL_IDS.includes(id));
+    if (unknown.length > 0) {
+      const quoted = unknown.map((id) => `"${id}"`).join(", ");
+      throw new ValidationError(`Unknown skill${unknown.length > 1 ? "s" : ""} ${quoted}.`);
+    }
+    console.log("\nNone of the requested skills are installed.\n");
+    return;
+  }
+
+  const unknown = bundledCandidates.filter(
+    (id) => !manifest.skills.includes(id) && !SKILL_IDS.includes(id),
+  );
+  if (unknown.length > 0) {
+    const quoted = unknown.map((id) => `"${id}"`).join(", ");
+    throw new ValidationError(
+      `Unknown skill${unknown.length > 1 ? "s" : ""} ${quoted}.\nBundled: ${SKILL_IDS.join(", ")}`,
+    );
+  }
+  const skillIds = bundledCandidates.filter((id) => manifest.skills.includes(id));
+
+  if (skillIds.length === 0 && removedExternal.length === 0) {
     console.log("\nNone of the requested skills are installed.\n");
     return;
   }
 
   const paths = pathsForSkillRemoval(manifest, skillIds);
   const needsAgentRebuild =
-    skillIds.some((id) => {
-      const skill = SKILLS.find((s) => s.id === id);
-      return skill?.category === "domain";
-    }) &&
+    skillIds.some((id) => id !== "global") &&
     (manifest.platform === "agents-md" ||
       manifest.platform === "claude-code" ||
       manifest.platform === "copilot");
 
-  if (!options.yes && !options.dryRun) {
+  if (skillIds.length > 0 && !options.yes && !options.dryRun) {
     const proceed = await confirm({
       message: `Remove ${skillIds.join(", ")} from installation?`,
       default: false,
@@ -63,12 +110,15 @@ export async function runRemove(options: RemoveOptions): Promise<void> {
     }
   }
 
-  const { removed, skipped } = await removePaths(paths, {
-    force: options.force,
-    dryRun: options.dryRun,
-  });
+  const { removed, skipped } =
+    skillIds.length > 0
+      ? await removePaths(paths, {
+          force: options.force,
+          dryRun: options.dryRun,
+        })
+      : { removed: [] as string[], skipped: [] as string[] };
 
-  if (!options.dryRun) {
+  if (!options.dryRun && skillIds.length > 0) {
     const updatedManifest = removeSkillsFromManifest(manifest, skillIds, removed);
     await writeInstallManifest(cwd, updatedManifest);
 
@@ -91,14 +141,18 @@ export async function runRemove(options: RemoveOptions): Promise<void> {
     }
   }
 
-  printUninstallResult({ removed, skipped, dryRun: options.dryRun ?? false });
+  printUninstallResult({
+    removed: [...removedExternal.map((n) => `.agents/skills/${n}`), ...removed],
+    skipped,
+    dryRun: options.dryRun ?? false,
+  });
 }
 
 export function registerRemoveCommand(program: Command): void {
   program
     .command("remove")
-    .description("Remove skills from an existing installation")
-    .argument("<skill-ids...>", "Skill ids to remove")
+    .description("Remove bundled standards or integrated skills from the project")
+    .argument("<skill-ids...>", "Bundled id (global) or integrated skill name from skills-lock.json")
     .option("-C, --cwd <dir>", "Target project directory", process.cwd())
     .option("-y, --yes", "Skip confirmation prompt")
     .option("--force", "Remove files even without Vorlaxen watermark")
@@ -108,7 +162,7 @@ export function registerRemoveCommand(program: Command): void {
     .action(async (skillIds: string[], opts) => {
       await runRemove({
         cwd: opts.cwd,
-        skillIds: parseSkillIds(skillIds),
+        skillIds: parseRemoveSkillIds(skillIds),
         yes: opts.yes,
         force: opts.force,
         dryRun: opts.dryRun,

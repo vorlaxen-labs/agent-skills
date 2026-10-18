@@ -1,9 +1,9 @@
 import { confirm } from "@inquirer/prompts";
 import { Command } from "commander";
-import { deleteFile, pathExists, removeEmptyDir } from "../fs.js";
+import { deleteFile, pathExists, removeEmptyDir } from "../core/fs.js";
 import { getManifestPath, readInstallManifest } from "../install/manifest.js";
 import { removePaths } from "../install/remove.js";
-import { printUninstallResult, setOutputOptions } from "../output.js";
+import { printUninstallResult, setOutputOptions } from "../core/output.js";
 
 export interface UninstallOptions {
   cwd?: string;

@@ -1,8 +1,8 @@
 import { comparePlannedToDisk } from "../install/compare-snapshot.js";
-import { readTextFile } from "../fs.js";
+import { readTextFile } from "../core/fs.js";
 import type { InstallManifest } from "../install/manifest.js";
 import { planFromManifest } from "../install/run.js";
-import { WATERMARK } from "../markdown.js";
+import { WATERMARK } from "../core/markdown.js";
 import type { PlannedWrite } from "../install/planned.js";
 import { executePlan } from "../install/executor.js";
 import { buildContentHashes, writeInstallManifest } from "../install/manifest.js";

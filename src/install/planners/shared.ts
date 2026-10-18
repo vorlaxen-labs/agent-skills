@@ -1,5 +1,4 @@
-import { projectPath } from "../../fs.js";
-import { stripFrontmatter } from "../../markdown.js";
+import { projectPath } from "../../core/fs.js";
 import { indexFilesByPath } from "../../source/types.js";
 import type { InstallContext, PlannedWrite } from "../types.js";
 
@@ -24,40 +23,6 @@ export function filesUnder(
   return out;
 }
 
-export function planLibraryAssets(ctx: InstallContext): PlannedWrite[] {
-  return planBundledSkillAssets(ctx, "library");
-}
-
-export function planAuditAssets(ctx: InstallContext): PlannedWrite[] {
-  return planBundledSkillAssets(ctx, "audit");
-}
-
-function planBundledSkillAssets(
-  ctx: InstallContext,
-  category: "library" | "audit",
-): PlannedWrite[] {
-  const index = indexFilesByPath(ctx.files);
-  const planned: PlannedWrite[] = [];
-
-  for (const skill of ctx.skills) {
-    if (skill.category !== category) continue;
-    const prefix = skill.paths[0];
-    const destDir = projectPath(ctx.cwd, ".agent-skills", skill.cursorSkillName);
-
-    const skillMd = getContent(index, `${prefix}/SKILL.md`);
-    if (skillMd) {
-      planned.push({ dest: projectPath(destDir, "SKILL.md"), content: skillMd });
-    }
-
-    for (const [rel, content] of filesUnder(index, prefix)) {
-      if (rel === "SKILL.md") continue;
-      planned.push({ dest: projectPath(destDir, rel), content });
-    }
-  }
-
-  return planned;
-}
-
 export function planSkillTree(
   ctx: InstallContext,
   prefix: string,
@@ -79,4 +44,4 @@ export function planSkillTree(
   return planned;
 }
 
-export { stripFrontmatter };
+export { stripFrontmatter } from "../../core/markdown.js";

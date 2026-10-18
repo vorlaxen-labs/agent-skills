@@ -1,4 +1,4 @@
-import { SKILLS } from "../catalog.js";
+import { SKILLS } from "../core/bundled-catalog.js";
 
 export function collectPaths(skillIds: string[]): string[] {
   const set = new Set<string>();

@@ -1,31 +1,59 @@
 # Vorlaxen Agent Skills
 
-[![CI](https://img.shields.io/github/actions/workflow/status/vorlaxen-labs/agent-skills/ci.yml?branch=main&label=CI)](https://github.com/vorlaxen-labs/agent-skills/actions/workflows/ci.yml)
+[![CI](https://img.shields.io/github/actions/workflow/status/vorlaxen-labs/Agent-Skills/ci.yml?branch=main&label=CI)](https://github.com/vorlaxen-labs/Agent-Skills/actions/workflows/ci.yml)
 [![npm](https://img.shields.io/npm/v/@vorlaxen-labs/agent-skills?label=npm)](https://www.npmjs.com/package/@vorlaxen-labs/agent-skills)
+[![License: MIT](https://img.shields.io/github/license/vorlaxen-labs/Agent-Skills)](LICENSE)
+[![Node](https://img.shields.io/node/v/@vorlaxen-labs/agent-skills)](package.json)
 
-**Decision boundaries for AI coding agents** — what they may decide, what they must not, and when to stop and ask.
+**CLI loader by [Vorlaxen Labs](https://github.com/vorlaxen-labs)** — install shared **engineering standards** once, then **pull skills from any GitHub repo** into Cursor, Claude Code, GitHub Copilot, Windsurf, Codex, Gemini CLI, and other tools that read project skill folders (for example `.cursor/skills`, `.agents/skills`, or `AGENTS.md`).
 
-Works with Cursor, Claude Code, Copilot, Windsurf, Codex, Gemini CLI, and any tool that reads custom instructions.
+```bash
+npx @vorlaxen-labs/agent-skills init
+npx @vorlaxen-labs/agent-skills hub add vorlaxen-skills-hub
+npx @vorlaxen-labs/agent-skills add hub:vorlaxen-skills-hub -s bar-js -y
+```
 
-Maintained by [Vorlaxen Labs](https://github.com/vorlaxen-labs) as both our internal agent config and an open community standard.
+| Install | [npm `@vorlaxen-labs/agent-skills`](https://www.npmjs.com/package/@vorlaxen-labs/agent-skills) · [Quick start](docs/quick-start.md) |
+| Repo | [github.com/vorlaxen-labs/Agent-Skills](https://github.com/vorlaxen-labs/Agent-Skills) |
 
 ---
 
 ## What is this?
 
-This repository is two things in one:
+| Role | What |
+|------|------|
+| **Loader CLI** | `init`, `add`, `hub`, `update`, `remove`, `doctor`, `list`, `diff`, `status`, `telemetry` |
+| **Bundled default** | [`AGENTS.md`](AGENTS.md) global standards only (this repo stays small) |
+| **Everything else** | Integrate from GitHub or local paths; tracked in `skills-lock.json` |
 
-| | **Engineering standards** | **Vorlaxen library skills** |
-|---|---|---|
-| **For** | Any team, any stack | Teams using [@vorlaxen-labs](https://github.com/vorlaxen-labs) npm packages |
-| **What** | Rules that stop agents from hallucinating, over-scoping, or asking permission for every pixel | Verified API docs so agents use `bar-js`, `huk-js`, `kargomucuz-sdk` correctly |
-| **Start here** | [`AGENTS.md`](AGENTS.md) | [`skills/libraries/`](skills/libraries/) |
+This repository is **not** a growing skill catalog. New skills live in their own repos and are added to **your** project:
 
-**Not Vorlaxen-specific?** Copy [`AGENTS.md`](AGENTS.md) and ignore the library folder.
+```bash
+npx @vorlaxen-labs/agent-skills add owner/skills-repo -s skill-name -y
+```
 
-**Using Vorlaxen packages?** Add the matching library skill on top of the global standards.
+---
 
-The [`@vorlaxen-labs/agent-skills`](https://www.npmjs.com/package/@vorlaxen-labs/agent-skills) CLI installs the right files into your project for your platform — interactively or in CI. Full CLI reference lives in [`docs/`](docs/README.md).
+## Who is it for?
+
+- Teams standardizing **AI agent behavior** with [`AGENTS.md`](AGENTS.md) and [Cursor rules](https://cursor.com/docs/context/rules)
+- Developers using **`npx`** to bootstrap **agent skills** without copying folders by hand
+- Projects that need **reproducible** skill installs via **`skills-lock.json`** (compatible with [vercel-labs/skills](https://github.com/vercel-labs/skills))
+
+---
+
+## Supported tools
+
+Works with any editor or CLI that loads skills from `.cursor/skills`, `.agents/skills`, Copilot instructions, or project-level `AGENTS.md`:
+
+| Tool | Typical layout |
+|------|----------------|
+| [Cursor](https://cursor.com) | `.cursor/skills/`, `.cursor/rules/` |
+| [Claude Code](https://docs.anthropic.com/en/docs/claude-code) | `.claude/skills/` (via planner) |
+| [GitHub Copilot](https://github.com/features/copilot) | Copilot instruction files |
+| Windsurf, Codex, Gemini CLI | Client-specific skill paths (see [integrations](docs/integrations.md)) |
+
+See [Integrations](docs/integrations.md) for GitHub sources, local paths, and lock file layout.
 
 ---
 
@@ -33,51 +61,42 @@ The [`@vorlaxen-labs/agent-skills`](https://www.npmjs.com/package/@vorlaxen-labs
 
 **Constrain decisions, not implementations.**
 
-These rules tell an agent *what it may decide* — not *how to write code*. Stack, patterns, and folder structure come from your project.
-
-Four hard boundaries:
-
-1. **Never hallucinate** — if it's not in the codebase, it doesn't exist
-2. **Match risk to action** — ask for API contracts, schema, security; proceed when the pattern is already in the code
-3. **Scope control** — no silent refactors or infrastructure changes
-4. **Follow the project** — your conventions beat agent preference
-
 Full rules: [`AGENTS.md`](AGENTS.md)
-
----
-
-## What's included
-
-### Engineering standards
-
-Universal modules for every project — global rules, optional web frontend/backend, and [audit modules](skills/audits/kill-ai-slop/README.md) such as `kill-ai-slop`. See [Included skills](docs/included-skills.md).
-
-### Vorlaxen library skills
-
-Optional skills for `@vorlaxen-labs/bar-js`, `@vorlaxen-labs/huk-js`, and `@vorlaxen-labs/kargomucuz-sdk`. Each ships with a `SKILL.md` entry point and a `reference/` folder with full API documentation verified against source.
 
 ---
 
 ## Get started
 
 ```bash
+# Global engineering standards for your platform
 npx @vorlaxen-labs/agent-skills init
+
+# Skills from another repo (SKILL.md layout — see SKILL-SPEC.md)
+npx @vorlaxen-labs/agent-skills add vercel-labs/agent-skills -s web-design-guidelines -y
 ```
 
 | Topic | Documentation |
 |-------|---------------|
-| Quick start and examples | [docs/quick-start.md](docs/quick-start.md) |
-| All CLI commands | [docs/README.md](docs/README.md) |
+| Quick start | [docs/quick-start.md](docs/quick-start.md) |
+| CLI commands | [docs/README.md](docs/README.md) |
+| Integrations | [docs/integrations.md](docs/integrations.md) |
 | Conflicts and manifest | [docs/conflicts-and-manifest.md](docs/conflicts-and-manifest.md) |
-| Remote source and cache | [docs/remote-and-cache.md](docs/remote-and-cache.md) |
 | Telemetry | [docs/telemetry.md](docs/telemetry.md) |
-| Manual install (without CLI) | [docs/manual-install.md](docs/manual-install.md) |
+| Authoring skills | [SKILL-SPEC.md](SKILL-SPEC.md) |
+| Contributing | [CONTRIBUTING.md](CONTRIBUTING.md) |
 
 ---
 
-## Contributing
+## FAQ
 
-Contributions welcome — see [CONTRIBUTING.md](CONTRIBUTING.md). Skill authoring spec: [SKILL-SPEC.md](SKILL-SPEC.md).
+**How is this different from a skill marketplace?**  
+This repo ships a **loader** plus **global defaults**. Domain skills stay in separate GitHub repositories; you `add` them per project.
+
+**Do I need to publish to npm to use skills?**  
+No. Run via `npx @vorlaxen-labs/agent-skills` or clone this repo for [manual install](docs/manual-install.md).
+
+**What format must external skills use?**  
+Each skill is a folder with `SKILL.md` and valid frontmatter — see [SKILL-SPEC.md](SKILL-SPEC.md).
 
 ---
 

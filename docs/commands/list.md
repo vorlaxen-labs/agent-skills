@@ -27,11 +27,5 @@ npx @vorlaxen-labs/agent-skills list --json
 | Id | Category | Default on init |
 |----|----------|-----------------|
 | `global` | Standard | Yes |
-| `web-frontend` | Domain | Yes |
-| `web-backend` | Domain | Yes |
-| `kill-ai-slop` | Audit | No |
-| `bar-js` | Library | No |
-| `huk-js` | Library | No |
-| `kargomucuz-sdk` | Library | No |
 
-See [Included skills](../included-skills.md) for what each module contains.
+Other skills are not bundled — integrate them with [`add`](add.md) or [`hub`](hub.md). See [Included skills](../included-skills.md).

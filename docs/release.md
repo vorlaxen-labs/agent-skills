@@ -3,8 +3,8 @@
 Publish to npm via GitHub tag. Requires `NPM_TOKEN` repository secret.
 
 ```bash
-git tag v1.3.0
-git push origin v1.3.0
+git tag v3.0.0
+git push origin v3.0.0
 ```
 
 CI runs checks and tests, then `npm publish` and creates a GitHub Release.
@@ -12,27 +12,24 @@ CI runs checks and tests, then `npm publish` and creates a GitHub Release.
 ## Repo layout
 
 ```
-agent-skills/
-├── AGENTS.md              # Universal — copy anywhere
-├── package.json           # CLI package
+Agent-Skills/
+├── AGENTS.md              # Universal — bundled global standard
+├── package.json           # @vorlaxen-labs/agent-skills
 ├── src/                   # CLI source
-│   ├── commands/          # init, list, doctor, update, diff, uninstall, add, remove, status, completion
-│   ├── install/           # plan, execute, merge, run, manifest v2, skill-paths
-│   ├── doctor/            # health checks, npm drift, fix
+│   ├── commands/          # init, add, hub, update, remove, doctor, status, diff, telemetry, …
+│   ├── install/           # plan, execute, merge, manifest v3, skill-paths
+│   ├── hub/               # hub subscriptions and catalog install
+│   ├── doctor/            # health checks, fix
 │   ├── source/            # bundled + GitHub fetch + cache
 │   ├── conflict/          # detect + resolve + per-path policy
-│   ├── diff/              # unified diff helper
-│   └── telemetry/         # anonymous usage events
+│   └── telemetry/         # anonymous usage events + config
 ├── bundled/               # Snapshot shipped with npm package
-├── rules/global.mdc       # Cursor always-on
-├── skills/
-│   ├── global/
-│   ├── web/
-│   └── libraries/
-├── docs/                  # CLI documentation
+├── rules/global.mdc       # Cursor always-on (synced with AGENTS.md)
+├── skills/global/         # Cursor skill (synced with AGENTS.md)
+├── docs/                  # CLI documentation + JSON schemas
 ├── CONTRIBUTING.md
 ├── SKILL-SPEC.md
 └── LICENSE
 ```
 
-See [CONTRIBUTING.md](../CONTRIBUTING.md) for sync checks and adding new modules.
+See [CONTRIBUTING.md](../CONTRIBUTING.md) for sync checks and contribution paths.

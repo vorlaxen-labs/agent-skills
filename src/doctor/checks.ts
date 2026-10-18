@@ -1,17 +1,16 @@
 import { readdir } from "node:fs/promises";
 import { join } from "node:path";
-import { SKILLS } from "../catalog.js";
 import {
   comparePlannedToDisk,
   normalizeIncoming,
 } from "../install/compare-snapshot.js";
-import { pathExists, projectPath, readTextFile } from "../fs.js";
+import { pathExists, projectPath, readTextFile } from "../core/fs.js";
 import { hashContent } from "../install/hash.js";
 import type { InstallManifest } from "../install/manifest.js";
-import { compareVersions } from "../install/manifest.js";
+import { compareVersions, unknownSkillIds } from "../install/manifest.js";
 import { planFromManifest } from "../install/run.js";
-import { WATERMARK } from "../markdown.js";
-import { getPackageVersion } from "../version.js";
+import { WATERMARK } from "../core/markdown.js";
+import { getPackageVersion } from "../core/version.js";
 import type { DoctorCheck } from "./types.js";
 
 export interface RunChecksOptions {
@@ -131,9 +130,7 @@ export async function runDoctorChecks(
     });
   }
 
-  const unknown = manifest.skills.filter(
-    (id) => !SKILLS.some((s) => s.id === id),
-  );
+  const unknown = unknownSkillIds(manifest.skills);
   if (unknown.length === 0) {
     checks.push({
       name: "skills",
@@ -144,7 +141,7 @@ export async function runDoctorChecks(
     checks.push({
       name: "skills",
       status: "warn",
-      message: `Unknown skill ids in manifest: ${unknown.join(", ")}`,
+      message: `Skills no longer in catalog: ${unknown.join(", ")}. Run \`agent-skills remove ${unknown.join(" ")}\`.`,
     });
   }
 
@@ -177,72 +174,9 @@ export async function runDoctorChecks(
     }
   }
 
-  const npmDrift = await checkLibraryNpmDrift(cwd, manifest.skills);
-  if (npmDrift) checks.push(npmDrift);
-
   checks.push(await findOrphanFiles(cwd, manifest));
 
   return checks;
-}
-
-export async function checkLibraryNpmDrift(
-  cwd: string,
-  skillIds: string[],
-): Promise<DoctorCheck | null> {
-  const librarySkills = SKILLS.filter(
-    (s) => skillIds.includes(s.id) && s.category === "library" && s.npmPackage,
-  );
-
-  if (librarySkills.length === 0) return null;
-
-  const pkgPath = projectPath(cwd, "package.json");
-  if (!(await pathExists(pkgPath))) {
-    return {
-      name: "npm-drift",
-      status: "warn",
-      message: "Library skills installed but no package.json found",
-    };
-  }
-
-  let pkg: Record<string, unknown>;
-  try {
-    pkg = JSON.parse(await readTextFile(pkgPath)) as Record<string, unknown>;
-  } catch {
-    return {
-      name: "npm-drift",
-      status: "warn",
-      message: "Could not parse package.json",
-    };
-  }
-
-  const deps = {
-    ...(pkg.dependencies as Record<string, string> | undefined),
-    ...(pkg.devDependencies as Record<string, string> | undefined),
-  };
-
-  const drifts: string[] = [];
-  for (const skill of librarySkills) {
-    const installed = deps[skill.npmPackage!];
-    if (!installed) {
-      drifts.push(`${skill.id}: ${skill.npmPackage} not in package.json`);
-    } else if (installed.replace(/^[\^~]/, "") !== skill.npmVersion) {
-      drifts.push(`${skill.id}: ${installed} (catalog: ${skill.npmVersion})`);
-    }
-  }
-
-  if (drifts.length === 0) {
-    return {
-      name: "npm-drift",
-      status: "ok",
-      message: "Library npm versions match catalog pins",
-    };
-  }
-
-  return {
-    name: "npm-drift",
-    status: "warn",
-    message: drifts.join("; "),
-  };
 }
 
 async function findOrphanFiles(
@@ -314,6 +248,11 @@ export function summarizeChecks(checks: DoctorCheck[]): {
 export function suggestAction(checks: DoctorCheck[]): string | null {
   if (checks.some((c) => c.name === "files" && c.status === "error")) {
     return "agent-skills doctor --fix";
+  }
+  const retired = checks.find((c) => c.name === "skills" && c.status === "warn");
+  if (retired) {
+    const match = retired.message.match(/Run `([^`]+)`/);
+    return match?.[1] ?? "agent-skills remove <skill-ids>";
   }
   if (checks.some((c) => c.name === "cli-version" && c.status === "warn")) {
     return "agent-skills update";

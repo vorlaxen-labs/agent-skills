@@ -11,7 +11,7 @@ import { comparePlannedToDisk, hasDrift } from "../../src/install/compare-snapsh
 import { readInstallManifest } from "../../src/install/manifest.js";
 import { planFromManifest } from "../../src/install/run.js";
 import { collectDriftPaths } from "../../src/doctor/fix.js";
-import { WATERMARK, withWatermark } from "../../src/markdown.js";
+import { WATERMARK, withWatermark } from "../../src/core/markdown.js";
 
 async function tempProject(): Promise<string> {
   return mkdtemp(join(tmpdir(), "agent-skills-doctor-diff-"));

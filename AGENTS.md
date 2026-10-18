@@ -4,7 +4,9 @@
 
 Decision boundaries for AI agents — not implementation recipes.
 
-**Source:** [Vorlaxen Agent Skills](https://github.com/vorlaxen-labs/agent-skills) by [vorlaxen-labs](https://github.com/vorlaxen-labs)
+**Source:** [Vorlaxen Agent Skills](https://github.com/vorlaxen-labs/Agent-Skills) by [vorlaxen-labs](https://github.com/vorlaxen-labs)
+
+This file is the **bundled global standard** installed by `npx @vorlaxen-labs/agent-skills init` (or copy manually). Domain and workflow skills live in **other repositories** — integrate them with `add` or `hub`; see [SKILL-SPEC.md](SKILL-SPEC.md).
 
 ---
 # Core Principle

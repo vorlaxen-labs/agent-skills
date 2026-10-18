@@ -83,7 +83,7 @@ describe("extractCommandProperties", () => {
       "init",
       {
         platform: "cursor",
-        skills: ["global", "web-frontend"],
+        skills: ["global"],
         remote: true,
         dryRun: true,
       },
@@ -92,15 +92,18 @@ describe("extractCommandProperties", () => {
 
     assert.deepEqual(props, {
       platform: "cursor",
-      skills_count: 2,
+      skills_count: 1,
       remote: true,
       dry_run: true,
     });
   });
 
   it("uses positional args for add/remove skill counts", () => {
-    const props = extractCommandProperties("add", {}, ["bar-js", "huk-js"]);
-    assert.equal(props.skills_count, 2);
+    const props = extractCommandProperties("add", {}, [
+      "vercel-labs/agent-skills",
+      "web-design-guidelines",
+    ]);
+    assert.equal(props.skills_count, 1);
   });
 });
 
@@ -233,7 +236,7 @@ describe("trackEvent", () => {
       exitCode: 0,
       commandOpts: {
         platform: "cursor",
-        skills: ["global", "web-frontend", "bar-js"],
+        skills: ["global"],
         remote: false,
       },
       args: [],
@@ -258,6 +261,6 @@ describe("trackEvent", () => {
     assert.equal(event.properties.duration_ms, 842);
     assert.equal(event.properties.exit_code, 0);
     assert.equal(event.properties.platform, "cursor");
-    assert.equal(event.properties.skills_count, 3);
+    assert.equal(event.properties.skills_count, 1);
   });
 });

@@ -1,12 +1,7 @@
-import { projectPath } from "../../fs.js";
+import { projectPath } from "../../core/fs.js";
 import { indexFilesByPath } from "../../source/types.js";
 import type { InstallContext, Planner } from "../types.js";
-import {
-  getContent,
-  planAuditAssets,
-  planLibraryAssets,
-  stripFrontmatter,
-} from "./shared.js";
+import { getContent, stripFrontmatter } from "./shared.js";
 
 export const planCopilot: Planner = (ctx) => {
   const index = indexFilesByPath(ctx.files);
@@ -17,7 +12,6 @@ export const planCopilot: Planner = (ctx) => {
 
   for (const skill of ctx.skills) {
     if (skill.id === "global") continue;
-    if (skill.category === "audit") continue;
     const skillMd = getContent(index, `${skill.paths[0]}/SKILL.md`);
     if (skillMd) parts.push(stripFrontmatter(skillMd).trim());
   }
@@ -27,7 +21,5 @@ export const planCopilot: Planner = (ctx) => {
       dest: projectPath(ctx.cwd, ".github", "copilot-instructions.md"),
       content: parts.join("\n\n---\n\n"),
     },
-    ...planLibraryAssets(ctx),
-    ...planAuditAssets(ctx),
   ];
 };

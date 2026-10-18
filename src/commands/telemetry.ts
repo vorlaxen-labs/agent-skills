@@ -4,7 +4,7 @@ import {
   readTelemetryConfig,
   setTelemetryEnabled,
 } from "../telemetry/config.js";
-import { setOutputOptions } from "../output.js";
+import { setOutputOptions } from "../core/output.js";
 
 export type TelemetryAction = "status" | "yes" | "no";
 

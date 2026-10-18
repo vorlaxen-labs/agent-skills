@@ -10,7 +10,7 @@ import {
   setTelemetryEnabled,
   writeTelemetryConfig,
 } from "../../src/telemetry/config.js";
-import { pathExists } from "../../src/fs.js";
+import { pathExists } from "../../src/core/fs.js";
 
 describe("telemetry config", () => {
   let tempDir = "";

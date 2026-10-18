@@ -46,16 +46,26 @@ When appending:
 | `vorlaxen-first` | Vorlaxen content appears before existing content |
 | `existing-first` | Your content appears before Vorlaxen content |
 
-## Manifest v2
+## Platform manifest (bundled standards)
 
-After install, the CLI writes `.agent-skills/manifest.json` with:
+After `init`, the CLI writes `.agent-skills/manifest.json` (schema v3) with a `$schema` pointer. Normative definition: [docs/schemas/install-manifest-v3.schema.json](../schemas/install-manifest-v3.schema.json) ([overview](../schemas/README.md)).
 
-- Selected platform and skills
-- `audits` — installed audit module ids (subset of `skills`; registry in repo `skills/audits/manifest.json`)
+Fields:
+
+- Platform and bundled skill ids (typically `global` only)
 - Remote source settings (if used)
 - Conflict policy and per-path overrides
-- `writtenBySkill` — which skill owns each path
-- `contentHashes` — checksums for drift detection
-- CLI version and install timestamp
+- `writtenBySkill`, `contentHashes`, CLI version
 
-`update`, `add`, `remove`, `doctor`, `diff`, and `status` read this manifest. `update` inherits conflict policy unless you pass `--on-conflict`.
+`update`, `remove`, `doctor`, `diff`, and `status` use this file for **bundled** standards. Legacy manifests (v1/v2, retired skill ids) are migrated on read.
+
+## Project lock (integrated skills)
+
+`add` writes **`skills-lock.json`** at the project root (vercel-labs/skills–compatible), with `$schema` set. Normative definition: [docs/schemas/skills-lock-v1.schema.json](../schemas/skills-lock-v1.schema.json) ([overview](../schemas/README.md)).
+
+Fields:
+
+- `source`, `sourceType`, `skillPath`, `computedHash` per skill name
+- Commit this file for reproducible integrations
+
+Integrated skills live under `.agents/skills/<name>/` (and `.cursor/skills/` when initialized for Cursor). See [integrations.md](integrations.md).

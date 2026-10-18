@@ -1,6 +1,6 @@
 # Telemetry
 
-The CLI sends anonymous usage events by default when a command completes.
+The CLI sends **anonymous usage events** when a command completes, unless telemetry is disabled.
 
 ## What is collected
 
@@ -8,7 +8,7 @@ The CLI sends anonymous usage events by default when a command completes.
 - For install commands: platform, skill count, remote/dry-run flags
 - CLI name and version
 - Node major version, OS, architecture, Linux distribution (when detectable)
-- Anonymous session id (random UUID per process — not persisted to disk)
+- Anonymous id stored in local config (see below)
 
 ## What is not collected
 
@@ -17,15 +17,29 @@ The CLI sends anonymous usage events by default when a command completes.
 - Project names or identifiers
 - File contents
 
-## Opt out
+## Persistent preference
 
-Disable for a single run:
+Config file (created on first run):
+
+- **Linux/macOS:** `$XDG_CONFIG_HOME/vorlaxen/telemetry.json` (default `~/.config/vorlaxen/telemetry.json`)
 
 ```bash
-agent-skills --no-telemetry init
-VORLAXEN_TELEMETRY=0 agent-skills init
+npx @vorlaxen-labs/agent-skills telemetry status
+npx @vorlaxen-labs/agent-skills telemetry no
+npx @vorlaxen-labs/agent-skills telemetry yes
+```
+
+Use `--json` on `telemetry` for machine-readable output.
+
+## Opt out for one invocation
+
+Per-run override (does not change saved preference):
+
+```bash
+npx @vorlaxen-labs/agent-skills --no-telemetry init
+VORLAXEN_TELEMETRY=0 npx @vorlaxen-labs/agent-skills init
 ```
 
 Accepted env values: `0`, `false`, `no`.
 
-Nothing is stored on disk — opt-out applies only to that invocation. There is no persistent opt-in/opt-out file.
+When telemetry is enabled globally, `--no-telemetry` or `VORLAXEN_TELEMETRY=0` skips events for that process only.

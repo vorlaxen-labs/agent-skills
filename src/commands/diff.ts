@@ -3,7 +3,7 @@ import { hasDrift } from "../install/compare-snapshot.js";
 import { comparePlannedToDisk } from "../install/compare-snapshot.js";
 import { ManifestError, readInstallManifest } from "../install/manifest.js";
 import { planFromManifest } from "../install/run.js";
-import { logVerbose, printDiffResult, setOutputOptions } from "../output.js";
+import { logVerbose, printDiffResult, setOutputOptions } from "../core/output.js";
 
 export interface DiffOptions {
   cwd?: string;

@@ -20,7 +20,10 @@ npx @vorlaxen-labs/agent-skills remove <skill-ids...>
 ## Example
 
 ```bash
-npx @vorlaxen-labs/agent-skills remove bar-js --yes
+npx @vorlaxen-labs/agent-skills remove my-integrated-skill --yes
+npx @vorlaxen-labs/agent-skills remove global --yes
 ```
+
+Bundled id `global` uses `.agent-skills/manifest.json`. Names from `skills-lock.json` remove integrated skills only.
 
 See also [`add`](add.md) and [`uninstall`](uninstall.md).

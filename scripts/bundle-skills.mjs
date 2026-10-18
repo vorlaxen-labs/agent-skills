@@ -6,19 +6,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const root = join(__dirname, "..");
 const bundled = join(root, "bundled");
 
-const paths = [
-  "AGENTS.md",
-  "rules/global.mdc",
-  "skills/global",
-  "skills/web/frontend",
-  "skills/web/backend",
-  "skills/audits/manifest.json",
-  "skills/audits/kill-ai-slop",
-  "skills/libraries/manifest.json",
-  "skills/libraries/bar-js",
-  "skills/libraries/huk-js",
-  "skills/libraries/kargomucuz-sdk",
-];
+const paths = ["AGENTS.md", "rules/global.mdc", "skills/global"];
 
 if (existsSync(bundled)) {
   rmSync(bundled, { recursive: true });

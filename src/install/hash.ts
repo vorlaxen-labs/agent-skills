@@ -1,5 +1,5 @@
 import { createHash } from "node:crypto";
-import { stripWatermark } from "../markdown.js";
+import { stripWatermark } from "../core/markdown.js";
 
 export function hashContent(content: string): string {
   const normalized = stripWatermark(content).trim();

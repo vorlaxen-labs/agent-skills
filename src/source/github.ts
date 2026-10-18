@@ -1,4 +1,4 @@
-import { GITHUB } from "../catalog.js";
+import { GITHUB } from "../core/bundled-catalog.js";
 import { readCache, writeCache } from "./cache.js";
 import type { RemoteFile, SkillSource } from "./types.js";
 
@@ -61,8 +61,8 @@ function sleep(ms: number): Promise<void> {
 }
 
 export function createGitHubSource(
-  owner = GITHUB.owner,
-  repo = GITHUB.repo,
+  owner: string = GITHUB.owner,
+  repo: string = GITHUB.repo,
   ref: string = GITHUB.branch,
   options: GitHubSourceOptions = {},
 ): SkillSource {

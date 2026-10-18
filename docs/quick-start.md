@@ -1,17 +1,18 @@
-# Quick start
+# Quick start — Vorlaxen Agent Skills CLI
 
-Install Vorlaxen Agent Skills into your project:
+Install global engineering standards, then integrate other skills from external GitHub repos:
 
 ```bash
 npx @vorlaxen-labs/agent-skills init
 ```
 
-The CLI walks you through platform selection (AGENTS.md, Cursor, Claude Code, Copilot) and the skills you need. Only selected files are fetched — no full repo clone.
+The CLI walks you through platform selection (AGENTS.md, Cursor, Claude Code, Copilot). Bundled content is **global** only; use `add` for everything else.
 
 ## Non-interactive example
 
 ```bash
-npx @vorlaxen-labs/agent-skills init --platform cursor --skills global,web-frontend,bar-js
+npx @vorlaxen-labs/agent-skills init --platform cursor --skills global -y
+npx @vorlaxen-labs/agent-skills add vercel-labs/agent-skills -s web-design-guidelines -y
 ```
 
 ## Preview without writing

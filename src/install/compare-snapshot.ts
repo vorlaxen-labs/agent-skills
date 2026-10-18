@@ -1,7 +1,7 @@
 import { compareContent, unifiedDiff, type FileDiff } from "../diff/unified.js";
 import type { PlannedWrite } from "../install/planned.js";
-import { pathExists, readTextFile } from "../fs.js";
-import { stripWatermark } from "../markdown.js";
+import { pathExists, readTextFile } from "../core/fs.js";
+import { stripWatermark } from "../core/markdown.js";
 
 export function normalizeIncoming(content: string): string {
   return stripWatermark(content).trim();

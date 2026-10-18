@@ -1,14 +1,15 @@
 import { Command } from "commander";
 import { comparePlannedToDisk, summarizeDiff } from "../install/compare-snapshot.js";
-import { pathExists } from "../fs.js";
+import { pathExists } from "../core/fs.js";
 import { runDoctorChecks, suggestAction, summarizeChecks } from "../doctor/checks.js";
 import {
   getManifestPath,
   readInstallManifest,
 } from "../install/manifest.js";
 import { planFromManifest } from "../install/run.js";
-import { printStatusResult, setOutputOptions } from "../output.js";
-import { getPackageVersion } from "../version.js";
+import { readSkillsLock } from "../lock/skills-lock.js";
+import { printStatusResult, setOutputOptions } from "../core/output.js";
+import { getPackageVersion } from "../core/version.js";
 
 export interface StatusOptions {
   cwd?: string;
@@ -27,6 +28,8 @@ export async function runStatus(options: StatusOptions = {}): Promise<void> {
   }
 
   const manifest = await readInstallManifest(cwd);
+  const lock = await readSkillsLock(cwd);
+  const integrated = Object.keys(lock.skills);
   const checks = await runDoctorChecks({ cwd, manifest, noCache: options.noCache });
   const summary = summarizeChecks(checks);
 
@@ -37,7 +40,7 @@ export async function runStatus(options: StatusOptions = {}): Promise<void> {
     installed: true,
     platform: manifest.platform,
     skills: manifest.skills,
-    audits: manifest.audits,
+    integratedSkills: integrated,
     cliVersion: manifest.cliVersion,
     currentCliVersion: getPackageVersion(),
     installedAt: manifest.installedAt,

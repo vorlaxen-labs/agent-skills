@@ -1,5 +1,5 @@
 import { Command } from "commander";
-import { printList, setOutputOptions } from "../output.js";
+import { printList, setOutputOptions } from "../core/output.js";
 
 export function registerListCommand(program: Command): void {
   program

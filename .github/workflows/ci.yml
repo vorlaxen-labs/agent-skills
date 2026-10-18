@@ -22,8 +22,5 @@ jobs:
       - name: Global sync check
         run: npm run check:sync
 
-      - name: Library npm version check
-        run: npm run check:libraries
-
       - name: Build and test
         run: npm test

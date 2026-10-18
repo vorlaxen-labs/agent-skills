@@ -1,5 +1,5 @@
 import { Command, InvalidArgumentError } from "commander";
-import { PLATFORMS, SKILLS } from "../catalog.js";
+import { PLATFORMS, SKILLS } from "../core/bundled-catalog.js";
 
 const COMMANDS = [
   "init",
@@ -9,10 +9,25 @@ const COMMANDS = [
   "diff",
   "uninstall",
   "add",
+  "hub",
   "remove",
   "status",
   "telemetry",
   "completion",
+  "help",
+];
+
+const HUB_COMMANDS = [
+  "add",
+  "remove",
+  "list",
+  "show",
+  "install",
+  "update",
+  "status",
+  "doctor",
+  "diff",
+  "search",
 ];
 
 export function registerCompletionCommand(program: Command): void {
@@ -66,6 +81,11 @@ _agent_skills_completions() {
       COMPREPLY=( $(compgen -W "bash zsh fish" -- "\${cur}") );;
     telemetry)
       COMPREPLY=( $(compgen -W "status yes no" -- "\${cur}") );;
+    hub)
+      if [[ \${COMP_CWORD} -eq 2 ]]; then
+        COMPREPLY=( $(compgen -W "${HUB_COMMANDS.join(" ")}" -- "\${cur}") )
+      fi
+      ;;
   esac
 }
 complete -F _agent_skills_completions agent-skills

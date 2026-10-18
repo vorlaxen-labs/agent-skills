@@ -1,6 +1,6 @@
 # `doctor`
 
-Check installed agent skills health — missing files, drift, npm version mismatches, and manifest integrity.
+Check installed agent skills health — missing files, drift, retired skill ids, and manifest integrity.
 
 ```bash
 npx @vorlaxen-labs/agent-skills doctor
@@ -28,5 +28,7 @@ npx @vorlaxen-labs/agent-skills doctor --fix
 npx @vorlaxen-labs/agent-skills doctor --fix-update
 npx @vorlaxen-labs/agent-skills doctor --strict
 ```
+
+If the project manifest still lists skill ids that were removed from the catalog, doctor warns and suggests `agent-skills remove <ids>`.
 
 Exit code is `1` when errors are found, or when `--strict` is set and warnings exist.

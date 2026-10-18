@@ -4,7 +4,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { describe, it } from "node:test";
 import { executePlan } from "../../src/install/executor.js";
-import { WATERMARK } from "../../src/markdown.js";
+import { WATERMARK } from "../../src/core/markdown.js";
 
 async function tempProject(): Promise<string> {
   return mkdtemp(join(tmpdir(), "agent-skills-conflict-"));

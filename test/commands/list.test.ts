@@ -1,8 +1,8 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import { registerListCommand } from "../../src/commands/list.js";
-import { PLATFORMS, SKILLS } from "../../src/catalog.js";
-import { printList, setOutputOptions } from "../../src/output.js";
+import { PLATFORMS, SKILLS } from "../../src/core/bundled-catalog.js";
+import { printList, setOutputOptions } from "../../src/core/output.js";
 import { Command } from "commander";
 
 describe("list command", () => {

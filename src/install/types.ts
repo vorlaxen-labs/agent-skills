@@ -1,4 +1,4 @@
-import type { SkillDefinition } from "../catalog.js";
+import type { SkillDefinition } from "../core/bundled-catalog.js";
 import type { RemoteFile } from "../source/types.js";
 import type { PlannedAction, PlannedWrite } from "./planned.js";
 

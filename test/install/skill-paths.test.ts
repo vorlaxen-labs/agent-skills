@@ -4,7 +4,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { describe, it } from "node:test";
 import { assignWriteToSkill, buildWrittenBySkill } from "../../src/install/skill-paths.js";
-import { SKILLS } from "../../src/catalog.js";
+import { SKILLS } from "../../src/core/bundled-catalog.js";
 
 describe("skill-paths", () => {
   it("assigns AGENTS.md to global skill", async () => {

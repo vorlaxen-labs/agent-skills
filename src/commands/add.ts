@@ -1,17 +1,12 @@
 import { Command } from "commander";
-import { registerSharedInstallFlags } from "../cli-options.js";
-import { readInstallManifest } from "../install/manifest.js";
-import { runInstall } from "../install/run.js";
-import {
-  platformLabel,
-  printInitResult,
-  setOutputOptions,
-} from "../output.js";
-import { parseSkillIds } from "../validate.js";
+import { installExternalSkills } from "../install/external-skill.js";
+import { setOutputOptions } from "../core/output.js";
 
 export interface AddOptions {
   cwd?: string;
-  skillIds: string[];
+  source: string;
+  skillNames?: string[];
+  ref?: string;
   yes?: boolean;
   dryRun?: boolean;
   verbose?: boolean;
@@ -21,60 +16,63 @@ export interface AddOptions {
 
 export async function runAdd(options: AddOptions): Promise<void> {
   const cwd = options.cwd ?? process.cwd();
-  setOutputOptions({
+  const output = setOutputOptions({
     verbose: options.verbose ?? false,
     json: options.json ?? false,
   });
 
-  const manifest = await readInstallManifest(cwd);
-  const newIds = options.skillIds.filter((id) => !manifest.skills.includes(id));
+  const result = await installExternalSkills({
+    cwd,
+    source: options.source,
+    skillNames: options.skillNames,
+    ref: options.ref,
+    dryRun: options.dryRun,
+    noCache: options.noCache,
+  });
 
-  if (newIds.length === 0) {
-    console.log("\nAll requested skills are already installed.\n");
+  if (output.json) {
+    console.log(JSON.stringify(result, null, 2));
     return;
   }
 
-  const mergedSkillIds = [...new Set([...manifest.skills, ...newIds])];
+  if (result.installed.length === 0 && result.skipped.length === 0) {
+    console.log("\nNo skills installed.\n");
+    return;
+  }
 
-  const installResult = await runInstall({
-    cwd,
-    platform: manifest.platform,
-    skillIds: mergedSkillIds,
-    remote: manifest.remote ?? undefined,
-    dryRun: options.dryRun,
-    yes: options.yes ?? true,
-    mergeManifest: true,
-    installSkillIds: newIds,
-    manifestPolicy: manifest.conflictPolicy,
-    noCache: options.noCache,
-    showFetchMessage: false,
-  });
-
-  printInitResult({
-    platform: installResult.platform,
-    platformLabel: platformLabel(installResult.platform),
-    result: installResult.result,
-    conflictPolicy: installResult.conflictPolicy,
-    dryRun: options.dryRun ?? false,
-    manifestPath: installResult.manifestPath,
-  });
+  if (result.installed.length > 0) {
+    console.log(`\nInstalled: ${result.installed.join(", ")}`);
+  }
+  if (result.skipped.length > 0) {
+    console.log(`Already present (skipped): ${result.skipped.join(", ")}`);
+  }
+  if (result.lockPath) {
+    console.log(`Lock: ${result.lockPath}`);
+  }
+  console.log("");
 }
 
 export function registerAddCommand(program: Command): void {
   program
     .command("add")
-    .description("Add skills to an existing installation")
-    .argument("<skill-ids...>", "Skill ids to add")
+    .description("Install skills from a GitHub repo or local path into the project")
+    .argument("<source>", "owner/repo, hub:<hubId>, GitHub URL, or local path")
+    .argument("[skills...]", "Skill name(s) from SKILL.md frontmatter (default: all)")
     .option("-C, --cwd <dir>", "Target project directory", process.cwd())
-    .option("-y, --yes", "Skip prompts")
-    .option("--dry-run", "Show planned writes without changing files")
+    .option("-s, --skill <names...>", "Install specific skill(s) by name")
+    .option("--ref <git-ref>", "Git ref for GitHub sources (default: main)")
+    .option("-y, --yes", "Non-interactive (reserved)")
+    .option("--dry-run", "Show planned installs without writing files")
     .option("--verbose", "Verbose logging")
     .option("--json", "Machine-readable output")
     .option("--no-cache", "Bypass GitHub response cache")
-    .action(async (skillIds: string[], opts) => {
+    .action(async (source: string, skills: string[], opts) => {
+      const skillNames = [...(opts.skill ?? []), ...skills].filter(Boolean);
       await runAdd({
         cwd: opts.cwd,
-        skillIds: parseSkillIds(skillIds),
+        source,
+        skillNames: skillNames.length > 0 ? skillNames : undefined,
+        ref: opts.ref,
         yes: opts.yes,
         dryRun: opts.dryRun,
         verbose: opts.verbose,

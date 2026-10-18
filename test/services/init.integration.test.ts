@@ -4,8 +4,8 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { describe, it } from "node:test";
 import { runInit } from "../../src/commands/init.js";
-import { WATERMARK } from "../../src/markdown.js";
-import { ValidationError } from "../../src/validate.js";
+import { WATERMARK } from "../../src/core/markdown.js";
+import { ValidationError } from "../../src/core/validate.js";
 
 async function tempProject(): Promise<string> {
   return mkdtemp(join(tmpdir(), "agent-skills-test-"));
@@ -67,19 +67,19 @@ describe("runInit integration", () => {
     await runInit({
       cwd,
       platform: "cursor",
-      skills: ["global", "web-frontend"],
+      skills: ["global"],
       json: true,
     });
 
     await stat(join(cwd, ".cursor", "rules", "global.mdc"));
     await stat(join(cwd, ".cursor", "skills", "global", "SKILL.md"));
-    await stat(join(cwd, ".cursor", "skills", "web-frontend", "SKILL.md"));
+    await stat(join(cwd, ".agents", "skills", "global", "SKILL.md"));
 
     const skill = await readFile(
-      join(cwd, ".cursor", "skills", "web-frontend", "SKILL.md"),
+      join(cwd, ".cursor", "skills", "global", "SKILL.md"),
       "utf8",
     );
-    assert.match(skill, /web-frontend/);
+    assert.match(skill, /global/);
     assert.ok(skill.includes(WATERMARK));
   });
 
@@ -177,35 +177,4 @@ describe("runInit integration", () => {
     assert.ok(manifest.written.length > 0);
   });
 
-  it("installs library skill reference tree under .agent-skills", async () => {
-    const cwd = await tempProject();
-    await runInit({
-      cwd,
-      platform: "agents-md",
-      skills: ["global", "bar-js"],
-      json: true,
-    });
-
-    await stat(join(cwd, ".agent-skills", "bar-js", "SKILL.md"));
-    await stat(join(cwd, ".agent-skills", "bar-js", "reference", "api-reference.md"));
-  });
-
-  it("installs audit module tree under .agent-skills without merging into AGENTS.md", async () => {
-    const cwd = await tempProject();
-    await runInit({
-      cwd,
-      platform: "agents-md",
-      skills: ["global", "kill-ai-slop"],
-      json: true,
-    });
-
-    await stat(join(cwd, ".agent-skills", "kill-ai-slop", "scripts", "scan.mjs"));
-    const agents = await readFile(join(cwd, "AGENTS.md"), "utf8");
-    assert.doesNotMatch(agents, /Kill AI Slop/);
-
-    const manifest = JSON.parse(
-      await readFile(join(cwd, ".agent-skills", "manifest.json"), "utf8"),
-    );
-    assert.deepEqual(manifest.audits, ["kill-ai-slop"]);
-  });
 });

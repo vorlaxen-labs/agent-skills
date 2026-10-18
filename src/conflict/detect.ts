@@ -1,5 +1,5 @@
-import { pathExists, readTextFile } from "../fs.js";
-import { stripWatermark } from "../markdown.js";
+import { pathExists, readTextFile } from "../core/fs.js";
+import { stripWatermark } from "../core/markdown.js";
 import type { PlannedWrite } from "../install/planned.js";
 
 export async function detectConflicts(

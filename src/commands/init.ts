@@ -1,22 +1,22 @@
 import { checkbox, select } from "@inquirer/prompts";
 import { Command, InvalidArgumentError } from "commander";
-import { PLATFORMS, SKILLS, type Platform } from "../catalog.js";
+import { PLATFORMS, SKILLS, type Platform } from "../core/bundled-catalog.js";
 import {
   parseAppendOrder,
   parseConflictStrategy,
   registerSharedInstallFlags,
-} from "../cli-options.js";
+} from "../core/cli-options.js";
 import { runInstall } from "../install/run.js";
 import {
   platformLabel,
   printInitResult,
   setOutputOptions,
-} from "../output.js";
+} from "../core/output.js";
 import {
   parsePlatform,
   parseSkillIds,
   ValidationError,
-} from "../validate.js";
+} from "../core/validate.js";
 
 export interface InitOptions {
   cwd?: string;

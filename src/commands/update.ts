@@ -1,5 +1,5 @@
 import { Command } from "commander";
-import { registerSharedInstallFlags } from "../cli-options.js";
+import { registerSharedInstallFlags } from "../core/cli-options.js";
 import type { ConflictStrategy } from "../conflict/types.js";
 import { readInstallManifest } from "../install/manifest.js";
 import { runInstall } from "../install/run.js";
@@ -7,7 +7,7 @@ import {
   platformLabel,
   printInitResult,
   setOutputOptions,
-} from "../output.js";
+} from "../core/output.js";
 
 export interface UpdateOptions {
   cwd?: string;

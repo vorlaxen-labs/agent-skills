@@ -17,7 +17,7 @@ npx @vorlaxen-labs/agent-skills update --remote=main
 
 The remote ref is stored in the manifest so later `update` and `diff` calls use the same source unless overridden.
 
-Repository: [vorlaxen-labs/agent-skills](https://github.com/vorlaxen-labs/agent-skills) on GitHub.
+Repository: [vorlaxen-labs/Agent-Skills](https://github.com/vorlaxen-labs/Agent-Skills) on GitHub.
 
 ## Response cache
 

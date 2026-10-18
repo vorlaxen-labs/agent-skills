@@ -1,5 +1,5 @@
 import { Command } from "commander";
-import { pathExists } from "../fs.js";
+import { pathExists } from "../core/fs.js";
 import {
   getManifestPath,
   ManifestError,
@@ -7,7 +7,7 @@ import {
 } from "../install/manifest.js";
 import { runDoctorChecks } from "../doctor/checks.js";
 import { runDoctorFix } from "../doctor/fix.js";
-import { printDoctorResult, setOutputOptions } from "../output.js";
+import { printDoctorResult, setOutputOptions } from "../core/output.js";
 
 export interface DoctorOptions {
   cwd?: string;

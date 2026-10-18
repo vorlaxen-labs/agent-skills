@@ -5,7 +5,7 @@ import { join } from "node:path";
 import { describe, it } from "node:test";
 import { runInit } from "../../src/commands/init.js";
 import { runUpdate } from "../../src/commands/update.js";
-import { WATERMARK } from "../../src/markdown.js";
+import { WATERMARK } from "../../src/core/markdown.js";
 
 async function tempProject(): Promise<string> {
   return mkdtemp(join(tmpdir(), "agent-skills-update-"));

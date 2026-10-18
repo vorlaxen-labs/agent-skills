@@ -1,0 +1,79 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/vorlaxen-labs/Agent-Skills/main/docs/schemas/skills-lock-v1.schema.json",
+  "title": "Vorlaxen Agent Skills lock file",
+  "description": "Integrated skills from external sources (`agent-skills add`). Lock format version 1; aligned with vercel-labs/skills core fields.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version", "skills"],
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "format": "uri",
+      "description": "Optional JSON Schema reference for editors and validators."
+    },
+    "version": {
+      "const": 1,
+      "description": "Lock file schema version. Must be 1 for this schema."
+    },
+    "skills": {
+      "type": "object",
+      "additionalProperties": { "$ref": "#/$defs/skillLockEntry" },
+      "description": "Map of skill name (from SKILL.md frontmatter) to lock entry."
+    }
+  },
+  "$defs": {
+    "sourceType": {
+      "type": "string",
+      "enum": ["github", "local", "npm"]
+    },
+    "skillLockEntry": {
+      "type": "object",
+      "required": ["source", "sourceType", "skillPath", "computedHash"],
+      "properties": {
+        "source": {
+          "type": "string",
+          "minLength": 1,
+          "description": "GitHub owner/repo, local path, or npm coordinate as recorded at install."
+        },
+        "sourceType": { "$ref": "#/$defs/sourceType" },
+        "skillPath": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Path to SKILL.md inside the source tree (posix)."
+        },
+        "computedHash": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$",
+          "description": "SHA-256 hex over sorted skill folder files (path + content)."
+        },
+        "ref": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Git ref when sourceType is github."
+        },
+        "sourceUrl": {
+          "type": "string",
+          "format": "uri",
+          "description": "Optional canonical URL for the source."
+        }
+      },
+      "additionalProperties": true
+    }
+  },
+  "examples": [
+    {
+      "$schema": "https://raw.githubusercontent.com/vorlaxen-labs/Agent-Skills/main/docs/schemas/skills-lock-v1.schema.json",
+      "version": 1,
+      "skills": {
+        "demo-skill": {
+          "source": "vercel-labs/agent-skills",
+          "sourceType": "github",
+          "skillPath": "skills/demo-skill/SKILL.md",
+          "computedHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "ref": "main"
+        }
+      }
+    }
+  ]
+}

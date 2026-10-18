@@ -1,7 +1,7 @@
 import type { ConflictPolicyV2 } from "../conflict/types.js";
 import { resolveStrategyForPath } from "../conflict/path-policy.js";
-import { pathExists, readTextFile, writeTextFile } from "../fs.js";
-import { withWatermark } from "../markdown.js";
+import { pathExists, readTextFile, writeTextFile } from "../core/fs.js";
+import { withWatermark } from "../core/markdown.js";
 import { contentAlreadyPresent, mergeContent } from "./merge.js";
 import type { InstallResult, PlannedAction, PlannedWrite } from "./types.js";
 

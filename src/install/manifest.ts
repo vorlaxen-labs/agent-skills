@@ -1,26 +1,25 @@
-import { PLATFORMS, SKILLS, type Platform } from "../catalog.js";
+import { PLATFORMS, SKILLS, type Platform } from "../core/bundled-catalog.js";
 import {
   defaultPolicyOverrides,
   normalizePolicyV2,
 } from "../conflict/path-policy.js";
 import type { ConflictPolicyV2 } from "../conflict/types.js";
-import { pathExists, projectPath, readTextFile, writeTextFile } from "../fs.js";
+import { pathExists, projectPath, readTextFile, writeTextFile } from "../core/fs.js";
 import type { RemoteRef } from "../source/resolve.js";
-import { getPackageVersion } from "../version.js";
+import { INSTALL_MANIFEST_V3_SCHEMA_URL } from "../schemas/public-urls.js";
+import { getPackageVersion } from "../core/version.js";
 import { hashContent } from "./hash.js";
-import { auditSkillIds } from "./skill-categories.js";
 import { buildWrittenBySkill } from "./skill-paths.js";
 import type { InstallResult } from "./types.js";
 
-export const MANIFEST_SCHEMA_VERSION = 2;
+export const MANIFEST_SCHEMA_VERSION = 3;
 
 export interface InstallManifest {
   schemaVersion: number;
   cliVersion: string;
   platform: Platform;
+  /** Bundled standard module ids (typically `global` only). */
   skills: string[];
-  /** Installed audit module ids (subset of `skills`; see skills/audits/manifest.json) */
-  audits: string[];
   remote: RemoteRef | null;
   installedAt: string;
   conflictPolicy: ConflictPolicyV2 | null;
@@ -59,33 +58,38 @@ export async function readInstallManifest(cwd: string): Promise<InstallManifest>
   return validateManifest(raw, path, cwd);
 }
 
-function migrateV1(
+function migrateLegacy(
   m: Record<string, unknown>,
   cwd: string,
+  schemaVersion: number,
 ): InstallManifest {
   const platform = m.platform as Platform;
-  const skills = m.skills as string[];
+  const skillsRaw = m.skills as string[];
+  const bundledIds = new Set(SKILLS.map((s) => s.id));
+  const skills = skillsRaw.filter((id) => bundledIds.has(id));
   const written = m.written as string[];
   const oldPolicy = m.conflictPolicy as
-    | { strategy: string; appendOrder?: ConflictPolicyV2["appendOrder"] }
+    | { strategy?: string; default?: string; appendOrder?: ConflictPolicyV2["appendOrder"] }
+    | ConflictPolicyV2
     | null;
 
   let conflictPolicy: ConflictPolicyV2 | null = null;
-  if (oldPolicy && typeof oldPolicy.strategy === "string") {
-    conflictPolicy = normalizePolicyV2({
-      default: oldPolicy.strategy as ConflictPolicyV2["default"],
-      appendOrder: oldPolicy.appendOrder,
-    });
+  if (oldPolicy && typeof oldPolicy === "object") {
+    if ("strategy" in oldPolicy && typeof oldPolicy.strategy === "string") {
+      conflictPolicy = normalizePolicyV2({
+        default: oldPolicy.strategy as ConflictPolicyV2["default"],
+        appendOrder: oldPolicy.appendOrder,
+      });
+    } else {
+      conflictPolicy = normalizePolicyV2(oldPolicy as ConflictPolicyV2);
+    }
   }
 
-  return {
+  const base: InstallManifest = {
     schemaVersion: MANIFEST_SCHEMA_VERSION,
     cliVersion: typeof m.cliVersion === "string" ? m.cliVersion : "",
     platform,
-    skills,
-    audits: Array.isArray(m.audits)
-      ? (m.audits as string[])
-      : auditSkillIds(skills),
+    skills: skills.length > 0 ? skills : ["global"],
     remote: (m.remote ?? null) as RemoteRef | null,
     installedAt: typeof m.installedAt === "string" ? m.installedAt : "",
     conflictPolicy,
@@ -94,6 +98,18 @@ function migrateV1(
     writtenBySkill: buildWrittenBySkill(written, cwd, skills),
     contentHashes: {},
   };
+
+  if (schemaVersion < 3 && skillsRaw.length !== skills.length) {
+    base.written = written.filter((p) => {
+      if (p.includes("/.agent-skills/")) return false;
+      if (p.includes("/.agents/skills/")) return false;
+      const retired = skillsRaw.filter((id) => !bundledIds.has(id));
+      return !retired.some((id) => p.includes(`/${id}/`));
+    });
+    base.writtenBySkill = buildWrittenBySkill(base.written, cwd, base.skills);
+  }
+
+  return base;
 }
 
 function validateManifest(raw: unknown, path: string, cwd: string): InstallManifest {
@@ -119,8 +135,8 @@ function validateManifest(raw: unknown, path: string, cwd: string): InstallManif
   }
 
   const schemaVersion = typeof m.schemaVersion === "number" ? m.schemaVersion : 1;
-  if (schemaVersion < 2) {
-    return migrateV1(m, cwd);
+  if (schemaVersion < MANIFEST_SCHEMA_VERSION) {
+    return migrateLegacy(m, cwd, schemaVersion);
   }
 
   const conflictPolicy = normalizePolicyV2(
@@ -137,16 +153,11 @@ function validateManifest(raw: unknown, path: string, cwd: string): InstallManif
       ? (m.contentHashes as Record<string, string>)
       : {};
 
-  const skills = m.skills as string[];
-
   return {
     schemaVersion: MANIFEST_SCHEMA_VERSION,
     cliVersion: typeof m.cliVersion === "string" ? m.cliVersion : "",
     platform: platform as Platform,
-    skills,
-    audits: Array.isArray(m.audits)
-      ? (m.audits as string[])
-      : auditSkillIds(skills),
+    skills: m.skills as string[],
     remote: (m.remote ?? null) as RemoteRef | null,
     installedAt: typeof m.installedAt === "string" ? m.installedAt : "",
     conflictPolicy,
@@ -164,6 +175,7 @@ export async function writeInstallManifest(
   const dest = getManifestPath(cwd);
   const content = JSON.stringify(
     {
+      $schema: INSTALL_MANIFEST_V3_SCHEMA_URL,
       ...manifest,
       schemaVersion: MANIFEST_SCHEMA_VERSION,
       cliVersion: manifest.cliVersion || getPackageVersion(),
@@ -202,7 +214,6 @@ export function buildManifest(
     cliVersion: getPackageVersion(),
     platform,
     skills,
-    audits: auditSkillIds(skills),
     remote: remote ?? null,
     installedAt: new Date().toISOString(),
     conflictPolicy: normalized,
@@ -236,7 +247,6 @@ export function mergeManifests(
     cliVersion: incoming.cliVersion || getPackageVersion(),
     platform: existing.platform,
     skills,
-    audits: auditSkillIds(skills),
     remote: incoming.remote ?? existing.remote,
     installedAt: new Date().toISOString(),
     conflictPolicy: incoming.conflictPolicy ?? existing.conflictPolicy,
@@ -254,7 +264,6 @@ export function removeSkillsFromManifest(
 ): InstallManifest {
   const removedSet = new Set(removedPaths);
   const skills = manifest.skills.filter((id) => !skillIds.includes(id));
-  const audits = auditSkillIds(skills);
   const written = manifest.written.filter((p) => !removedSet.has(p));
   const skipped = manifest.skipped.filter((p) => !removedSet.has(p));
 
@@ -267,7 +276,6 @@ export function removeSkillsFromManifest(
   return {
     ...manifest,
     skills,
-    audits,
     written,
     skipped,
     writtenBySkill,

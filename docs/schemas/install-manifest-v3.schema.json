@@ -1,0 +1,142 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/vorlaxen-labs/Agent-Skills/main/docs/schemas/install-manifest-v3.schema.json",
+  "title": "Vorlaxen Agent Skills install manifest",
+  "description": "Bundled engineering standards installed via `agent-skills init` / `update`. Schema version 3.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "cliVersion",
+    "platform",
+    "skills",
+    "remote",
+    "installedAt",
+    "conflictPolicy",
+    "written",
+    "skipped",
+    "writtenBySkill",
+    "contentHashes"
+  ],
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "format": "uri",
+      "description": "Optional JSON Schema reference for editors and validators."
+    },
+    "schemaVersion": {
+      "const": 3,
+      "description": "Install manifest schema version. Must be 3 for this schema."
+    },
+    "cliVersion": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Semver of @vorlaxen-labs/agent-skills that last wrote this file."
+    },
+    "platform": {
+      "type": "string",
+      "enum": ["agents-md", "cursor", "claude-code", "copilot"],
+      "description": "Target agent platform selected at init."
+    },
+    "skills": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "description": "Bundled standard module ids (typically [\"global\"])."
+    },
+    "remote": {
+      "description": "Remote source for bundled content: null/false = bundled package; true = package version tag; string = explicit git ref.",
+      "oneOf": [
+        { "type": "null" },
+        { "type": "boolean" },
+        { "type": "string", "minLength": 1 }
+      ]
+    },
+    "installedAt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 timestamp of last install or update."
+    },
+    "conflictPolicy": {
+      "oneOf": [{ "type": "null" }, { "$ref": "#/$defs/conflictPolicyV2" }]
+    },
+    "written": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "description": "Absolute paths of files written by the CLI."
+    },
+    "skipped": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "description": "Paths that were not modified (conflict skip or equivalent)."
+    },
+    "writtenBySkill": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "array",
+        "items": { "type": "string", "minLength": 1 }
+      },
+      "description": "Map of bundled skill id → paths written for that skill."
+    },
+    "contentHashes": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string",
+        "pattern": "^[a-f0-9]{64}$"
+      },
+      "description": "SHA-256 hex hashes of installed file contents at write time."
+    }
+  },
+  "$defs": {
+    "conflictStrategy": {
+      "type": "string",
+      "enum": ["replace", "append", "skip", "inherit"]
+    },
+    "appendOrder": {
+      "type": "string",
+      "enum": ["existing-first", "vorlaxen-first"]
+    },
+    "conflictPolicyV2": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["default"],
+      "properties": {
+        "default": { "$ref": "#/$defs/conflictStrategy" },
+        "appendOrder": { "$ref": "#/$defs/appendOrder" },
+        "overrides": {
+          "type": "object",
+          "additionalProperties": { "$ref": "#/$defs/conflictStrategy" },
+          "description": "Per-path or glob override (e.g. AGENTS.md, .cursor/rules/*)."
+        }
+      }
+    }
+  },
+  "examples": [
+    {
+      "$schema": "https://raw.githubusercontent.com/vorlaxen-labs/Agent-Skills/main/docs/schemas/install-manifest-v3.schema.json",
+      "schemaVersion": 3,
+      "cliVersion": "2.0.0",
+      "platform": "agents-md",
+      "skills": ["global"],
+      "remote": null,
+      "installedAt": "2026-01-15T12:00:00.000Z",
+      "conflictPolicy": {
+        "default": "append",
+        "appendOrder": "vorlaxen-first",
+        "overrides": {
+          "AGENTS.md": "append"
+        }
+      },
+      "written": ["/path/to/project/AGENTS.md"],
+      "skipped": [],
+      "writtenBySkill": {
+        "global": ["/path/to/project/AGENTS.md"]
+      },
+      "contentHashes": {
+        "/path/to/project/AGENTS.md": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    }
+  ]
+}

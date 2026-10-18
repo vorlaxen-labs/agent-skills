@@ -2,66 +2,70 @@
 
 Thank you for improving Vorlaxen Agent Skills.
 
-**Authoring spec:** [SKILL-SPEC.md](SKILL-SPEC.md) — skill types, structure, frontmatter, reference layout, review checklist.
+This repository is primarily a **loader CLI** (`@vorlaxen-labs/agent-skills`) plus **bundled global engineering standards**. Domain skills, audits, and team-specific modules belong in **separate GitHub repositories** (or hubs), not in this tree.
 
-## Source of Truth
+**Skill authoring format:** [SKILL-SPEC.md](SKILL-SPEC.md)
 
-Global standards must stay in sync across these files:
+---
+
+## Ways to contribute
+
+| Area | What to change |
+|------|----------------|
+| **CLI** | TypeScript under `src/`, tests under `test/`, docs under `docs/` |
+| **Bundled global** | `AGENTS.md`, `skills/global/SKILL.md`, `rules/global.mdc` (keep in sync) |
+| **External skills** | Open a PR in your skill repo; optional hub catalog in `agent-skills.hub.json` |
+
+Do not add new bundled skill ids here without a maintainer decision — the catalog is intentionally **`global` only**. Use `add` / `hub` for everything else.
+
+---
+
+## Global standards — source of truth
+
+When editing global content, update **all three** files. Bodies must match from `# Core Principle` onward:
 
 | File | Purpose |
 |------|---------|
-| `AGENTS.md` | Universal — all tools, project root |
+| `AGENTS.md` | Universal — project root for all tools |
 | `skills/global/SKILL.md` | Cursor on-demand skill |
 | `rules/global.mdc` | Cursor always-on rule |
 
-Domain-specific modules (`web-frontend`, `web-backend`, library skills):
+CI runs `npm run check`, which includes global sync (`AGENTS.md` ↔ `skills/global/SKILL.md` ↔ `rules/global.mdc`).
 
-| File | Purpose |
-|------|---------|
-| `skills/web/*/SKILL.md` | Web domain Cursor skills |
-| `skills/audits/manifest.json` | Audit module registry (ids, paths, scanner) |
-| `skills/audits/*/SKILL.md` | Audit modules (scan/report workflows + scripts) |
-| `skills/libraries/*/SKILL.md` | Library Cursor skills |
-| `skills/libraries/*/reference/` | Full API documentation per package |
-
-When editing global content, update **all three** global files. When editing a library skill, update `SKILL.md`, `skills/libraries/manifest.json`, and the relevant `reference/` files together.
-
-CI runs `npm run check` — global sync (`AGENTS.md` ↔ `skills/global/SKILL.md` ↔ `rules/global.mdc` from `# Core Principle`) and library npm version binding.
-
-## Adding a New Module
-
-1. Create `skills/your-module/SKILL.md` with frontmatter:
-
-```yaml
 ---
-name: your-module
-description: >-
-  What it does and when the agent should use it. Third person. Include trigger terms.
----
+
+## Developing the CLI
+
+Requirements: Node **18+**, npm or pnpm.
+
+```bash
+npm install
+npm run build
+npm test
+npm run ci          # sync checks + tests (same as CI)
 ```
 
-2. Add `reference/` docs if the module needs detailed API or domain reference.
-3. Update the modules table in `README.md`.
-4. Open a pull request against `main`.
+| Script | Purpose |
+|--------|---------|
+| `npm run dev` | Run CLI via `tsx src/cli.ts` |
+| `npm run check:sync` | Global markdown sync |
+| `npm run check:bundled` | Bundled snapshot matches `skills/` + `rules/` |
 
-## Adding a Library Skill
+JSON schemas for manifests and lock files: [docs/schemas/README.md](docs/schemas/README.md).
 
-1. Create `skills/libraries/<package-name>/SKILL.md` — concise entry point with critical rules and quick start.
-2. Add verified documentation under `skills/libraries/<package-name>/reference/`.
-3. Cross-check all API claims against the actual package source before merging.
-4. Update `README.md` library table.
-5. Pin the verified npm version in `skills/libraries/manifest.json` and `SKILL.md` frontmatter (`npmPackage`, `npmVersion`) — CI checks all three match and exist on npm.
+---
 
-## Content Guidelines
+## Content guidelines (global and external skills)
 
 - **Core principle:** Constrain decisions, not implementations.
-- Every module starts with **Core Principle** and **Hard Rules**.
-- Write **Decision:** for boundaries, **Required outcome:** for goals, **Not your decision:** for what the project owns.
+- Standards modules: **Core Principle**, **Hard Rules**, `# Decision:` boundaries.
 - Use MUST / MUST NOT / STOP / ASK — not vague "consider" or "prefer".
-- Do not prescribe implementation patterns, specific libraries, or folder layouts.
+- Do not prescribe implementation patterns, specific libraries, or folder layouts unless the skill is an explicit workflow with documented scripts.
 - Keep modules focused and composable.
 
-## Platform Compatibility
+---
+
+## Platform compatibility
 
 Prefer portable markdown in skill bodies. Tool-specific metadata belongs only in:
 
@@ -72,6 +76,16 @@ Prefer portable markdown in skill bodies. Tool-specific metadata belongs only in
 
 Core instruction content should read the same whether pasted into Claude, Copilot, or Cursor.
 
+---
+
+## Pull requests
+
+1. One logical change per PR when possible (CLI fix vs global copy vs docs).
+2. Run `npm run ci` before opening.
+3. Update user-facing docs when behavior or commands change (`docs/`, `README.md`, this file, `SKILL-SPEC.md` as needed).
+
+---
+
 ## Questions
 
-Open an [issue](https://github.com/vorlaxen-labs/agent-skills/issues) before large structural changes.
+Open an [issue](https://github.com/vorlaxen-labs/Agent-Skills/issues) before large structural changes (new bundled skills, manifest schema breaks, hub format changes).

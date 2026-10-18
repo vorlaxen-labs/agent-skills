@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/vorlaxen-labs/Agent-Skills/main/docs/schemas/agent-skills-hub-v1.schema.json",
+  "title": "Vorlaxen Agent Skills hub catalog",
+  "description": "Remote catalog (agent-skills.hub.json) listing skill aliases and their install sources.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version", "id", "skills"],
+  "properties": {
+    "$schema": { "type": "string", "format": "uri" },
+    "version": { "const": 1 },
+    "id": { "type": "string", "minLength": 1 },
+    "skills": {
+      "type": "object",
+      "additionalProperties": { "$ref": "#/$defs/skillEntry" }
+    }
+  },
+  "$defs": {
+    "skillEntry": {
+      "type": "object",
+      "required": ["source"],
+      "additionalProperties": false,
+      "properties": {
+        "source": { "type": "string", "minLength": 1 },
+        "ref": { "type": "string", "minLength": 1 },
+        "skill": { "type": "string", "minLength": 1 },
+        "description": { "type": "string" }
+      }
+    }
+  }
+}

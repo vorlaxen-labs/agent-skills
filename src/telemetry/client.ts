@@ -1,4 +1,4 @@
-import { logVerbose } from "../output.js";
+import { logVerbose } from "../core/output.js";
 import type { TelemetryEvent } from "./types.js";
 
 export const TELEMETRY_URL = "https://api.vorlaxen.com/api/v1/telemetry/events";

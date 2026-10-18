@@ -2,7 +2,7 @@ import { readFileSync } from "node:fs";
 import { arch, platform } from "node:os";
 import { randomUUID } from "node:crypto";
 import { readTelemetryConfig } from "./config.js";
-import { getPackageVersion } from "../version.js";
+import { getPackageVersion } from "../core/version.js";
 import type {
   TelemetryCliContext,
   TelemetryContext,

@@ -1,5 +1,5 @@
-import { deleteFile, pathExists, readTextFile } from "../fs.js";
-import { WATERMARK } from "../markdown.js";
+import { deleteFile, pathExists, readTextFile } from "../core/fs.js";
+import { WATERMARK } from "../core/markdown.js";
 
 export interface RemovePathsOptions {
   force?: boolean;

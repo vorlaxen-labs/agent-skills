@@ -1,4 +1,4 @@
-import { projectPath } from "../../fs.js";
+import { projectPath } from "../../core/fs.js";
 import { indexFilesByPath } from "../../source/types.js";
 import type { InstallContext, PlannedWrite, Planner } from "../types.js";
 import { getContent, planSkillTree } from "./shared.js";
@@ -19,6 +19,8 @@ export const planCursor: Planner = (ctx) => {
 
       const globalSkill = getContent(index, "skills/global/SKILL.md");
       if (globalSkill) {
+        const agentsDest = projectPath(ctx.cwd, ".agents", "skills", "global", "SKILL.md");
+        planned.push({ dest: agentsDest, content: globalSkill });
         planned.push({
           dest: projectPath(ctx.cwd, ".cursor", "skills", "global", "SKILL.md"),
           content: globalSkill,

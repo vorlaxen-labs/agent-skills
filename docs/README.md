@@ -1,6 +1,6 @@
-# Documentation
+# Agent Skills CLI documentation
 
-CLI and usage reference for [@vorlaxen-labs/agent-skills](https://www.npmjs.com/package/@vorlaxen-labs/agent-skills).
+Reference for the **Vorlaxen Agent Skills loader** — [@vorlaxen-labs/agent-skills](https://www.npmjs.com/package/@vorlaxen-labs/agent-skills) on npm, [Agent-Skills on GitHub](https://github.com/vorlaxen-labs/Agent-Skills).
 
 ## Getting started
 
@@ -14,21 +14,25 @@ CLI and usage reference for [@vorlaxen-labs/agent-skills](https://www.npmjs.com/
 | [`list`](commands/list.md) | List available platforms and skills |
 | [`doctor`](commands/doctor.md) | Check installation health and repair drift |
 | [`update`](commands/update.md) | Refresh installed skills from snapshot or remote |
-| [`add`](commands/add.md) | Add skills to an existing installation |
+| [`add`](commands/add.md) | Integrate skills from a GitHub repo, hub, or local path |
+| [`hub`](commands/hub.md) | Subscribe to skill hubs and bulk install/update |
 | [`remove`](commands/remove.md) | Remove selected skills |
 | [`status`](commands/status.md) | Summary of health, drift, and suggested actions |
 | [`diff`](commands/diff.md) | Compare installed files to the latest snapshot |
 | [`uninstall`](commands/uninstall.md) | Remove all installed agent skill files |
 | [`completion`](commands/completion.md) | Shell tab completion (bash, zsh, fish) |
+| [`telemetry`](commands/telemetry.md) | Persistent anonymous telemetry on/off |
 
 ## Concepts
 
-- [Conflicts and manifest](conflicts-and-manifest.md) — merge strategies, manifest v2, per-path overrides
+- [Integrations](integrations.md) — external repos and `skills-lock.json`
+- [Conflicts and manifest](conflicts-and-manifest.md) — merge strategies, platform manifest, lock file
+- [JSON Schemas](schemas/README.md) — `manifest.json` and `skills-lock.json` (draft 2020-12)
 - [Remote source and cache](remote-and-cache.md) — bundled snapshot vs GitHub, response cache
 - [Telemetry](telemetry.md) — anonymous usage events and opt-out
 - [Manual install](manual-install.md) — copy files without the CLI
 
 ## Content reference
 
-- [Included skills](included-skills.md) — engineering standards and Vorlaxen library modules
+- [Included skills](included-skills.md) — bundled global standards only
 - [Release (maintainers)](release.md) — npm publish workflow

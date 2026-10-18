@@ -1,12 +1,7 @@
-import { projectPath } from "../../fs.js";
+import { projectPath } from "../../core/fs.js";
 import { indexFilesByPath } from "../../source/types.js";
 import type { InstallContext, PlannedWrite, Planner } from "../types.js";
-import {
-  getContent,
-  planAuditAssets,
-  planLibraryAssets,
-  stripFrontmatter,
-} from "./shared.js";
+import { getContent, stripFrontmatter } from "./shared.js";
 
 export const planClaudeCode: Planner = (ctx) => {
   const index = indexFilesByPath(ctx.files);
@@ -33,5 +28,5 @@ export const planClaudeCode: Planner = (ctx) => {
     });
   }
 
-  return [...planned, ...planLibraryAssets(ctx), ...planAuditAssets(ctx)];
+  return planned;
 };

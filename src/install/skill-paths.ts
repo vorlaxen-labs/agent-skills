@@ -1,7 +1,7 @@
 import { relative } from "node:path";
-import type { Platform, SkillDefinition } from "../catalog.js";
-import { SKILLS } from "../catalog.js";
-import { projectPath } from "../fs.js";
+import type { Platform, SkillDefinition } from "../core/bundled-catalog.js";
+import { SKILLS } from "../core/bundled-catalog.js";
+import { projectPath } from "../core/fs.js";
 import type { InstallContext, PlannedWrite } from "./types.js";
 import { planInstall } from "./planners/index.js";
 
@@ -19,12 +19,7 @@ export function planForSkill(
     files: ctx.files,
   };
 
-  if (
-    platform === "agents-md" &&
-    skill.id !== "global" &&
-    skill.category !== "library" &&
-    skill.category !== "audit"
-  ) {
+  if (platform === "agents-md" && skill.id !== "global") {
     return [];
   }
 
@@ -53,12 +48,6 @@ export function assignWriteToSkill(
 
   if (rel === "AGENTS.md" || rel === "CLAUDE.md" || rel === ".github/copilot-instructions.md") {
     return "global";
-  }
-
-  if (rel.startsWith(".agent-skills/")) {
-    const segment = rel.split("/")[1];
-    const match = skills.find((s) => s.cursorSkillName === segment);
-    return match?.id ?? null;
   }
 
   if (rel.startsWith(".cursor/skills/")) {

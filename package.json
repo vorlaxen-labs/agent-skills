@@ -1,24 +1,28 @@
 {
   "name": "@vorlaxen-labs/agent-skills",
-  "version": "1.3.1",
-  "description": "CLI to install Vorlaxen Agent Skills into your project — Cursor, Claude Code, Copilot, or AGENTS.md",
+  "version": "3.0.0",
+  "description": "Vorlaxen Agent Skills CLI — init global engineering standards, add and update skills from any GitHub repo for Cursor, Claude Code, Copilot, and more",
+  "author": "Vorlaxen Labs",
   "license": "MIT",
+  "homepage": "https://github.com/vorlaxen-labs/Agent-Skills#readme",
+  "bugs": {
+    "url": "https://github.com/vorlaxen-labs/Agent-Skills/issues"
+  },
   "type": "module",
   "bin": {
     "agent-skills": "dist/cli.js"
   },
   "files": [
     "dist",
-    "bundled"
+    "bundled",
+    "docs/schemas"
   ],
   "scripts": {
     "build": "node scripts/bundle-skills.mjs && tsc",
     "dev": "tsx src/cli.ts",
-    "test": "npm run build && node scripts/check-audits-sync.mjs && node scripts/run-tests.mjs && node --test skills/audits/kill-ai-slop/scripts/scan.test.mjs",
+    "test": "npm run build && node scripts/run-tests.mjs",
     "check:sync": "node scripts/check-sync.mjs",
-    "check:libraries": "node scripts/check-library-versions.mjs",
-    "check": "npm run check:sync && npm run check:libraries && npm run check:audits && npm run check:bundled",
-    "check:audits": "node scripts/check-audits-sync.mjs",
+    "check": "npm run check:sync && npm run check:bundled",
     "check:bundled": "node scripts/check-bundled.mjs",
     "ci": "npm run check && npm test",
     "prepublishOnly": "npm run build && npm run ci"
@@ -28,15 +32,25 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/vorlaxen-labs/agent-skills.git"
+    "url": "git+https://github.com/vorlaxen-labs/Agent-Skills.git"
   },
   "keywords": [
-    "cursor",
-    "claude",
-    "copilot",
+    "agent-skills",
     "agents-md",
-    "ai",
-    "skills"
+    "ai-coding",
+    "ai-agents",
+    "claude-code",
+    "codex",
+    "copilot",
+    "cursor",
+    "cursor-rules",
+    "developer-tools",
+    "engineering-standards",
+    "gemini-cli",
+    "llm",
+    "npx",
+    "skills",
+    "windsurf"
   ],
   "dependencies": {
     "@inquirer/prompts": "^7.5.0",

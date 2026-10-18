@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import { Command } from "commander";
 import { registerAddCommand } from "./commands/add.js";
+import { registerHubCommand } from "./hub/commands/index.js";
 import { registerCompletionCommand } from "./commands/completion.js";
 import { registerDiffCommand } from "./commands/diff.js";
 import { registerDoctorCommand } from "./commands/doctor.js";
@@ -11,15 +12,16 @@ import { registerStatusCommand } from "./commands/status.js";
 import { registerTelemetryCommand } from "./commands/telemetry.js";
 import { registerUninstallCommand } from "./commands/uninstall.js";
 import { registerUpdateCommand } from "./commands/update.js";
+import { registerHelpCommand } from "./commands/help.js";
 import { trackCommand } from "./telemetry/track.js";
-import { getPackageVersion } from "./version.js";
+import { getPackageVersion } from "./core/version.js";
 
 const program = new Command();
 let commandStartedAt = 0;
 
 program
   .name("agent-skills")
-  .description("Install Vorlaxen Agent Skills into your project")
+  .description("Loader for agent skills — init global standards, add skills from any repo")
   .version(getPackageVersion())
   .option("--no-telemetry", "Disable anonymous usage telemetry for this run");
 
@@ -30,10 +32,12 @@ registerUpdateCommand(program);
 registerDiffCommand(program);
 registerUninstallCommand(program);
 registerAddCommand(program);
+registerHubCommand(program);
 registerRemoveCommand(program);
 registerStatusCommand(program);
 registerTelemetryCommand(program);
 registerCompletionCommand(program);
+registerHelpCommand(program);
 
 program.hook("preAction", () => {
   commandStartedAt = Date.now();

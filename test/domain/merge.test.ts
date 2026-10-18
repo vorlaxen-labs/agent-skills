@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import { mergeContent, SECTION_SEPARATOR } from "../../src/install/merge.js";
-import { WATERMARK, withWatermark } from "../../src/markdown.js";
+import { WATERMARK, withWatermark } from "../../src/core/markdown.js";
 
 describe("mergeContent", () => {
   it("places vorlaxen content first when order is vorlaxen-first", () => {
