@@ -19,8 +19,5 @@ jobs:
 
       - run: npm ci
 
-      - name: Global sync check
-        run: npm run check:sync
-
-      - name: Build and test
-        run: npm test
+      - name: CI (sync, bundled snapshot, tests)
+        run: npm run ci

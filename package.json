@@ -22,7 +22,7 @@
     "dev": "tsx src/cli.ts",
     "test": "npm run build && node scripts/run-tests.mjs",
     "check:sync": "node scripts/check-sync.mjs",
-    "check": "npm run check:sync && npm run check:bundled",
+    "check": "npm run check:sync && npm run build && npm run check:bundled",
     "check:bundled": "node scripts/check-bundled.mjs",
     "ci": "npm run check && npm test",
     "prepublishOnly": "npm run build && npm run ci"
