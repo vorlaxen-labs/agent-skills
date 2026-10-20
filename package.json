@@ -4,9 +4,9 @@
   "description": "Vorlaxen Agent Skills CLI — init global engineering standards, add and update skills from any GitHub repo for Cursor, Claude Code, Copilot, and more",
   "author": "Vorlaxen Labs",
   "license": "MIT",
-  "homepage": "https://github.com/vorlaxen-labs/Agent-Skills#readme",
+  "homepage": "https://github.com/vorlaxen-labs/agent-skills#readme",
   "bugs": {
-    "url": "https://github.com/vorlaxen-labs/Agent-Skills/issues"
+    "url": "https://github.com/vorlaxen-labs/agent-skills/issues"
   },
   "type": "module",
   "bin": {
@@ -37,7 +37,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/vorlaxen-labs/Agent-Skills.git"
+    "url": "git+https://github.com/vorlaxen-labs/agent-skills.git"
   },
   "keywords": [
     "agent-skills",

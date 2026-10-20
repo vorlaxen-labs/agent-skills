@@ -12,17 +12,21 @@ This matches the [@vorlaxen-labs/bar-js](https://github.com/vorlaxen-labs/bar-js
 - Package: `@vorlaxen-labs/agent-skills`
 - Public access is set in `package.json` → `publishConfig.access`.
 
-### 2. GitHub repository secret
+### 2. GitHub Actions auth (OIDC)
 
-In **GitHub → vorlaxen-labs/Agent-Skills → Settings → Secrets and variables → Actions**:
-
-| Secret      | Value |
-|-------------|--------|
-| `NPM_TOKEN` | **Not used for publish** when Trusted Publishing is set up. Optional read token only if you install private deps in CI. |
-
-Publish auth is **OIDC** via [Trusted Publishing](https://docs.npmjs.com/trusted-publishers).
+Publish auth is **OIDC** via [Trusted Publishing](https://docs.npmjs.com/trusted-publishers). No `NPM_TOKEN` secret is required for the publish job.
 
 `GITHUB_TOKEN` is provided automatically by Actions.
+
+Requirements in CI (see `.github/workflows/publish.yml`):
+
+- **Node.js 22.14+** (workflow uses Node 22)
+- **npm CLI 11.5.1+** (upgraded in the publish job)
+- Job permission **`id-token: write`**
+- Do **not** pass `registry-url` to `setup-node` (conflicts with semantic-release OIDC)
+- Do **not** write `//registry.npmjs.org/:_authToken=…` into `.npmrc` for publish
+
+`package.json` → `repository.url` must match the GitHub repo exactly (currently `git+https://github.com/vorlaxen-labs/agent-skills.git`).
 
 ### 3. npm Trusted Publisher (required for CI publish)
 
@@ -30,13 +34,14 @@ On [npmjs.com](https://www.npmjs.com) → **@vorlaxen-labs/agent-skills** → **
 
 1. Provider: **GitHub Actions**
 2. Organization / user: `vorlaxen-labs`
-3. Repository: `Agent-Skills`
+3. Repository: `agent-skills`
 4. **Workflow filename:** `publish.yml` (filename only)
 5. Environment: (leave empty unless you use GitHub Environments)
+6. **Allowed actions:** enable **`npm publish`** (semantic-release uses direct publish)
 
-Save, then re-run the failed **Publish Package** workflow if needed.
+After saving, status shows **Pending validation** until the first successful OIDC publish from `publish.yml`. Complete that publish before npm’s validation deadline or the config is removed.
 
-The publish job does **not** pass `registry-url` to `setup-node` (that pattern breaks OIDC). Do not rely on `NODE_AUTH_TOKEN` for `npm publish` in CI.
+Save, then merge to `main` with a conventional commit (`fix:`, `feat:`, …) so CI and **Publish Package** run.
 
 ### 4. Branch and commits
 
@@ -64,6 +69,7 @@ Manual tag push (`git push origin v*`) is **not** used anymore.
 |---------|----------------|
 | OIDC `404 package not found` on publish | Trusted Publisher not linked for `@vorlaxen-labs/agent-skills`, or wrong repo / workflow filename |
 | `403` + bypass 2FA | Use Trusted Publishing instead of a granular token without bypass |
+| Trusted Publisher stuck on **Pending validation** | No OIDC `npm publish` from `publish.yml` yet; merge a `fix:`/`feat:` commit before the npm deadline |
 | No release after push to `main` | No conventional commit since last tag; run `npm run release:dry-run` locally |
 | `bundled/ is out of date` in CI | `npm run ci` runs `build` before `check:bundled` — ensure `main` is green |
 
