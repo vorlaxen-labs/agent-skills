@@ -63,7 +63,7 @@
     "openai-codex"
   ],
   "dependencies": {
-    "@inquirer/prompts": "^7.5.0",
+    "@inquirer/prompts": "^8.7.3",
     "commander": "^13.1.0"
   },
   "devDependencies": {
