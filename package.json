@@ -64,7 +64,7 @@
   ],
   "dependencies": {
     "@inquirer/prompts": "^7.5.0",
-    "commander": "^13.1.0"
+    "commander": "^15.0.0"
   },
   "devDependencies": {
     "@semantic-release/commit-analyzer": "^13.0.1",
