@@ -3,10 +3,8 @@ import { mkdtemp, readFile, unlink, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { describe, it } from "node:test";
-import { runDiff } from "../../src/commands/diff.js";
 import { runDoctor } from "../../src/commands/doctor.js";
 import { runInit } from "../../src/commands/init.js";
-import { runStatus } from "../../src/commands/status.js";
 import { comparePlannedToDisk, hasDrift } from "../../src/install/compare-snapshot.js";
 import { readInstallManifest } from "../../src/install/manifest.js";
 import { planFromManifest } from "../../src/install/run.js";
@@ -14,7 +12,7 @@ import { collectDriftPaths } from "../../src/doctor/fix.js";
 import { WATERMARK, withWatermark } from "../../src/core/markdown.js";
 
 async function tempProject(): Promise<string> {
-  return mkdtemp(join(tmpdir(), "agent-skills-doctor-diff-"));
+  return mkdtemp(join(tmpdir(), "agent-skills-doctor-"));
 }
 
 async function captureJson<T>(fn: () => Promise<void>): Promise<T> {
@@ -29,8 +27,14 @@ async function captureJson<T>(fn: () => Promise<void>): Promise<T> {
   return JSON.parse(logs[0]!) as T;
 }
 
-describe("doctor/diff consistency", () => {
-  it("doctor and diff agree after fresh install", async () => {
+async function plannedDiff(cwd: string) {
+  const manifest = await readInstallManifest(cwd);
+  const { planned } = await planFromManifest(cwd, manifest);
+  return comparePlannedToDisk(planned);
+}
+
+describe("doctor drift detection", () => {
+  it("doctor passes after fresh install with no drift", async () => {
     const cwd = await tempProject();
     await runInit({
       cwd,
@@ -43,13 +47,11 @@ describe("doctor/diff consistency", () => {
 
     assert.equal(await runDoctor({ cwd, json: true }), 0);
 
-    const diffPayload = await captureJson<{ files: { status: string }[] }>(() =>
-      runDiff({ cwd, json: true }).then(() => {}),
-    );
-    assert.ok(diffPayload.files.every((f) => f.status === "unchanged"));
+    const files = await plannedDiff(cwd);
+    assert.ok(files.every((f) => f.status === "unchanged"));
   });
 
-  it("doctor upstream-drift and diff both detect local edits", async () => {
+  it("doctor upstream-drift detects local edits", async () => {
     const cwd = await tempProject();
     await runInit({
       cwd,
@@ -69,17 +71,15 @@ describe("doctor/diff consistency", () => {
     const upstream = doctorPayload.checks.find((c) => c.name === "upstream-drift");
     assert.equal(upstream?.status, "warn");
 
-    const diffPayload = await captureJson<{ files: { dest: string; status: string }[] }>(
-      () => runDiff({ cwd, json: true }).then(() => {}),
-    );
-    assert.equal(diffPayload.files.find((f) => f.dest === agents)?.status, "modify");
+    const files = await plannedDiff(cwd);
+    assert.equal(files.find((f) => f.dest === agents)?.status, "modify");
 
     const manifest = await readInstallManifest(cwd);
     const driftPaths = await collectDriftPaths(cwd, manifest);
     assert.ok(driftPaths.includes(agents));
   });
 
-  it("doctor reports missing files; diff reports create", async () => {
+  it("doctor reports missing files when AGENTS.md is deleted", async () => {
     const cwd = await tempProject();
     await runInit({
       cwd,
@@ -95,13 +95,11 @@ describe("doctor/diff consistency", () => {
 
     assert.equal(await runDoctor({ cwd, json: true }), 1);
 
-    const diffPayload = await captureJson<{ files: { dest: string; status: string }[] }>(
-      () => runDiff({ cwd, json: true }).then(() => {}),
-    );
-    assert.equal(diffPayload.files.find((f) => f.dest === agents)?.status, "create");
+    const files = await plannedDiff(cwd);
+    assert.equal(files.find((f) => f.dest === agents)?.status, "create");
   });
 
-  it("diff --check exits 1 when drift exists", async () => {
+  it("hasDrift is true when planned files differ from disk", async () => {
     const cwd = await tempProject();
     await runInit({
       cwd,
@@ -114,8 +112,8 @@ describe("doctor/diff consistency", () => {
 
     await writeFile(join(cwd, "AGENTS.md"), "# changed\n");
 
-    const code = await runDiff({ cwd, json: true, check: true });
-    assert.equal(code, 1);
+    const files = await plannedDiff(cwd);
+    assert.ok(hasDrift(files));
   });
 
   it("doctor --strict fails on watermark warnings", async () => {
@@ -154,10 +152,12 @@ describe("doctor/diff consistency", () => {
     const restored = await readFile(agents, "utf8");
     assert.match(restored, /Constrain decisions/);
     assert.ok(restored.includes(WATERMARK));
-    assert.equal(await runDiff({ cwd, json: true, check: true }), 0);
+
+    const files = await plannedDiff(cwd);
+    assert.ok(files.every((f) => f.status === "unchanged"));
   });
 
-  it("status diff summary matches comparePlannedToDisk", async () => {
+  it("comparePlannedToDisk summarizes modify counts for drift", async () => {
     const cwd = await tempProject();
     await runInit({
       cwd,
@@ -170,15 +170,8 @@ describe("doctor/diff consistency", () => {
 
     await writeFile(join(cwd, "AGENTS.md"), withWatermark("# drift"));
 
-    const statusPayload = await captureJson<{
-      diff: { unchanged: number; modify: number; create: number };
-    }>(() => runStatus({ cwd, json: true }));
-
-    const manifest = await readInstallManifest(cwd);
-    const { planned } = await planFromManifest(cwd, manifest);
-    const files = await comparePlannedToDisk(planned);
-
-    assert.equal(statusPayload.diff.modify, files.filter((f) => f.status === "modify").length);
+    const files = await plannedDiff(cwd);
+    assert.equal(files.filter((f) => f.status === "modify").length, 1);
     assert.ok(hasDrift(files));
   });
 

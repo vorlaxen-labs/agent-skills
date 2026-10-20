@@ -1,0 +1,14 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Welcome / FAQ
+    url: https://github.com/vorlaxen-labs/agent-skills/discussions/1
+    about: Pinned intro, quick start, and where to post what
+  - name: Questions and ideas
+    url: https://github.com/vorlaxen-labs/agent-skills/discussions/categories/q-a
+    about: New Q&A threads (preferred for how-to and design questions)
+  - name: npm package
+    url: https://www.npmjs.com/package/@vorlaxen-labs/agent-skills
+    about: Install and version history on npm
+  - name: Documentation
+    url: https://github.com/vorlaxen-labs/agent-skills/tree/main/docs
+    about: CLI reference, integrations, and schemas

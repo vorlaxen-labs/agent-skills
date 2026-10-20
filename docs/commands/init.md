@@ -23,8 +23,6 @@ npx @vorlaxen-labs/agent-skills init
 | `--on-conflict-for <glob=mode>` | Per-path conflict override (repeatable) |
 | `--no-cache` | Bypass GitHub response cache |
 
-Global flag: `--no-telemetry` — disable anonymous telemetry for this run.
-
 ## Examples
 
 ```bash

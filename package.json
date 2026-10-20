@@ -1,7 +1,7 @@
 {
   "name": "@vorlaxen-labs/agent-skills",
   "version": "3.0.4",
-  "description": "Vorlaxen Agent Skills CLI — init global engineering standards, add and update skills from any GitHub repo for Cursor, Claude Code, Copilot, and more",
+  "description": "Agent skills CLI: init AGENTS.md standards, add SKILL.md packs from any GitHub repo for Cursor, Claude Code, Copilot, Windsurf, Codex, Gemini — hubs, doctor, skills-lock.json",
   "author": "Vorlaxen Labs",
   "license": "MIT",
   "homepage": "https://github.com/vorlaxen-labs/agent-skills#readme",
@@ -55,7 +55,12 @@
     "llm",
     "npx",
     "skills",
-    "windsurf"
+    "windsurf",
+    "agents-md",
+    "skill-md",
+    "skills-lock",
+    "github-copilot",
+    "openai-codex"
   ],
   "dependencies": {
     "@inquirer/prompts": "^7.5.0",

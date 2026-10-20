@@ -267,7 +267,7 @@ export function suggestAction(checks: DoctorCheck[]): string | null {
     return "agent-skills doctor --fix";
   }
   if (checks.some((c) => c.name === "watermark" && c.status === "warn")) {
-    return "agent-skills diff  # review local edits";
+    return "agent-skills doctor  # review local edits";
   }
   return null;
 }

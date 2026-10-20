@@ -18,13 +18,12 @@ Agent-Skills/
 ├── AGENTS.md              # Universal — bundled global standard
 ├── package.json           # @vorlaxen-labs/agent-skills
 ├── src/                   # CLI source
-│   ├── commands/          # init, add, hub, update, remove, doctor, status, diff, telemetry, …
+│   ├── commands/          # init, add, hub, update, remove, doctor, …
 │   ├── install/           # plan, execute, merge, manifest v3, skill-paths
 │   ├── hub/               # hub subscriptions and catalog install
 │   ├── doctor/            # health checks, fix
 │   ├── source/            # bundled + GitHub fetch + cache
-│   ├── conflict/          # detect + resolve + per-path policy
-│   └── telemetry/         # anonymous usage events + config
+│   └── conflict/          # detect + resolve + per-path policy
 ├── bundled/               # Snapshot shipped with npm package (built in CI)
 ├── rules/global.mdc       # Cursor always-on (synced with AGENTS.md)
 ├── skills/global/         # Cursor skill (synced with AGENTS.md)

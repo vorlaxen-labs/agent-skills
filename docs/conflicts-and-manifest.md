@@ -57,7 +57,7 @@ Fields:
 - Conflict policy and per-path overrides
 - `writtenBySkill`, `contentHashes`, CLI version
 
-`update`, `remove`, `doctor`, `diff`, and `status` use this file for **bundled** standards. Legacy manifests (v1/v2, retired skill ids) are migrated on read.
+`update`, `remove`, and `doctor` use this file for **bundled** standards. Legacy manifests (v1/v2, retired skill ids) are migrated on read.
 
 ## Project lock (integrated skills)
 

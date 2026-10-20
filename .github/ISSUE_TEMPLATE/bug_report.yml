@@ -1,0 +1,65 @@
+name: Bug report
+description: Something is broken in the CLI or bundled global install
+title: "[bug]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting. For **questions**, use [Discussions](https://github.com/vorlaxen-labs/agent-skills/discussions) instead.
+
+  - type: input
+    id: version
+    attributes:
+      label: CLI version
+      description: Output of `npx @vorlaxen-labs/agent-skills --version` or the version in `package.json` if installed locally
+      placeholder: "3.0.4"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: platform
+    attributes:
+      label: Target platform flag (if any)
+      options:
+        - cursor
+        - claude
+        - copilot
+        - agents-md
+        - other / not sure
+    validations:
+      required: false
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: Exact commands from a clean project directory
+      placeholder: |
+        npx @vorlaxen-labs/agent-skills init -y
+        npx @vorlaxen-labs/agent-skills add owner/repo -s skill-id -y
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+      description: Include stderr/stdout; use `doctor --json` when relevant
+    validations:
+      required: true
+
+  - type: input
+    id: environment
+    attributes:
+      label: Environment
+      placeholder: "Node 22.x, Linux / macOS / Windows"
+    validations:
+      required: false

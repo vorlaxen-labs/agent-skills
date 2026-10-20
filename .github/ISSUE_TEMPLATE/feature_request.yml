@@ -1,0 +1,31 @@
+name: Feature request
+description: Suggest an improvement to the loader CLI or bundled global standards
+title: "[feature]: "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Domain-specific **skills** usually belong in a separate GitHub repo and are added with `add` / `hub`. Use this template for **loader**, lock file, hub, doctor, or bundled `global` standard changes.
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem or use case
+      description: What are you trying to do? Who benefits?
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+    validations:
+      required: false

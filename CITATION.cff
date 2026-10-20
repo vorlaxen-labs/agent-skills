@@ -1,0 +1,19 @@
+cff-version: 1.2.0
+title: Vorlaxen Agent Skills
+message: >-
+  If you use this CLI or bundled engineering standards in research or
+  publications, please cite this repository.
+type: software
+authors:
+  - name: Vorlaxen Labs
+repository-code: https://github.com/vorlaxen-labs/agent-skills
+url: https://github.com/vorlaxen-labs/agent-skills
+license: MIT
+keywords:
+  - agent-skills
+  - agents-md
+  - cursor
+  - claude-code
+  - github-copilot
+  - ai-coding
+version: 3.0.4

@@ -35,4 +35,4 @@ Paste `AGENTS.md` into custom instructions. For additional skills, paste each sk
 
 ---
 
-Manual install does not create `.agent-skills/manifest.json`. Lifecycle commands (`doctor`, `update`, `diff`, etc.) require a CLI installation. See [Quick start](quick-start.md).
+Manual install does not create `.agent-skills/manifest.json`. Lifecycle commands (`doctor`, `update`, etc.) require a CLI installation. See [Quick start](quick-start.md).

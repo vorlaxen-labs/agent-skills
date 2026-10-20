@@ -1,11 +1,14 @@
-# Vorlaxen Agent Skills
+# Vorlaxen Agent Skills — CLI loader for Cursor, Claude Code, and Copilot
 
-[![CI](https://img.shields.io/github/actions/workflow/status/vorlaxen-labs/Agent-Skills/ci.yml?branch=main&label=CI)](https://github.com/vorlaxen-labs/Agent-Skills/actions/workflows/ci.yml)
+[![CI](https://img.shields.io/github/actions/workflow/status/vorlaxen-labs/agent-skills/ci.yml?branch=main&label=CI)](https://github.com/vorlaxen-labs/agent-skills/actions/workflows/ci.yml)
 [![npm](https://img.shields.io/npm/v/@vorlaxen-labs/agent-skills?label=npm)](https://www.npmjs.com/package/@vorlaxen-labs/agent-skills)
-[![License: MIT](https://img.shields.io/github/license/vorlaxen-labs/Agent-Skills)](LICENSE)
+[![License: MIT](https://img.shields.io/github/license/vorlaxen-labs/agent-skills)](LICENSE)
 [![Node](https://img.shields.io/node/v/@vorlaxen-labs/agent-skills)](package.json)
+[![GitHub Discussions](https://img.shields.io/github/discussions/vorlaxen-labs/agent-skills?label=discussions)](https://github.com/vorlaxen-labs/agent-skills/discussions)
 
-**CLI loader by [Vorlaxen Labs](https://github.com/vorlaxen-labs)** — install shared **engineering standards** once, then **pull skills from any GitHub repo** into Cursor, Claude Code, GitHub Copilot, Windsurf, Codex, Gemini CLI, and other tools that read project skill folders (for example `.cursor/skills`, `.agents/skills`, or `AGENTS.md`).
+**`npx` CLI by [Vorlaxen Labs](https://github.com/vorlaxen-labs)** to bootstrap **[`AGENTS.md`](AGENTS.md) engineering standards** and **install agent skills from any GitHub repository** into [Cursor](https://cursor.com) (`.cursor/skills`, rules), [Claude Code](https://docs.anthropic.com/en/docs/claude-code), [GitHub Copilot](https://github.com/features/copilot), Windsurf, OpenAI Codex, Gemini CLI, and other **AI coding agents** that load `SKILL.md` packs or project-level instructions.
+
+> **Search terms:** agent skills CLI · cursor rules · agents-md · skill hub · skills-lock.json · install skills from GitHub · vercel-labs/skills compatible lock file
 
 ```bash
 npx @vorlaxen-labs/agent-skills init
@@ -14,7 +17,7 @@ npx @vorlaxen-labs/agent-skills add hub:vorlaxen-skills-hub -s bar-js -y
 ```
 
 | Install | [npm `@vorlaxen-labs/agent-skills`](https://www.npmjs.com/package/@vorlaxen-labs/agent-skills) · [Quick start](docs/quick-start.md) |
-| Repo | [github.com/vorlaxen-labs/Agent-Skills](https://github.com/vorlaxen-labs/Agent-Skills) |
+| Repo | [github.com/vorlaxen-labs/agent-skills](https://github.com/vorlaxen-labs/agent-skills) · [Welcome / FAQ (Discussions)](https://github.com/vorlaxen-labs/agent-skills/discussions/1) · [Releases](https://github.com/vorlaxen-labs/agent-skills/releases) |
 
 ---
 
@@ -22,7 +25,7 @@ npx @vorlaxen-labs/agent-skills add hub:vorlaxen-skills-hub -s bar-js -y
 
 | Role | What |
 |------|------|
-| **Loader CLI** | `init`, `add`, `hub`, `update`, `remove`, `doctor`, `list`, `diff`, `status`, `telemetry` |
+| **Loader CLI** | `init`, `add`, `hub`, `update`, `remove`, `doctor`, `list` |
 | **Bundled default** | [`AGENTS.md`](AGENTS.md) global standards only (this repo stays small) |
 | **Everything else** | Integrate from GitHub or local paths; tracked in `skills-lock.json` |
 
@@ -81,7 +84,6 @@ npx @vorlaxen-labs/agent-skills add vercel-labs/agent-skills -s web-design-guide
 | CLI commands | [docs/README.md](docs/README.md) |
 | Integrations | [docs/integrations.md](docs/integrations.md) |
 | Conflicts and manifest | [docs/conflicts-and-manifest.md](docs/conflicts-and-manifest.md) |
-| Telemetry | [docs/telemetry.md](docs/telemetry.md) |
 | Authoring skills | [SKILL-SPEC.md](SKILL-SPEC.md) |
 | Contributing | [CONTRIBUTING.md](CONTRIBUTING.md) |
 
@@ -98,8 +100,16 @@ No. Run via `npx @vorlaxen-labs/agent-skills` or clone this repo for [manual ins
 **What format must external skills use?**  
 Each skill is a folder with `SKILL.md` and valid frontmatter — see [SKILL-SPEC.md](SKILL-SPEC.md).
 
+**Where should I ask questions?**  
+Start with the pinned [Welcome / FAQ](https://github.com/vorlaxen-labs/agent-skills/discussions/1) discussion; use [Q&A](https://github.com/vorlaxen-labs/agent-skills/discussions/categories/q-a) for new threads. [Open an issue](https://github.com/vorlaxen-labs/agent-skills/issues/new/choose) for bugs and feature requests.
+
+**How do I report a security issue?**  
+See [SECURITY.md](SECURITY.md) — please avoid public issues for vulnerabilities.
+
 ---
 
 ## License
 
 MIT — see [LICENSE](LICENSE). Copyright (c) 2026 Vorlaxen Labs.
+
+Skills you install with `add` or `hub` from **other GitHub repositories** remain licensed by their respective authors; this license applies only to the loader, bundled global standards, docs, and schemas in this repo.

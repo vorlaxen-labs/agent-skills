@@ -20,13 +20,8 @@ Primary install path: **`add hub:<hubId> -s <alias>`**.
 | `hub add <id-or-source>` | Subscribe; validates catalog |
 | `hub remove <hubId...>` | Unsubscribe (does not remove installed skills) |
 | `hub list` | Subscriptions (default) or `hub list --skills` |
-| `hub show <hubId>` | One catalog |
 | `hub install <hubId>` | Install `-s` alias(es) or `--all` |
 | `hub update [hubId...]` | Refresh catalog cache; `--skills` reinstalls matching lock entries |
-| `hub status` | Subscriptions, cache age, possible hub ↔ lock matches |
-| `hub doctor` | Validate subscriptions; `--fix` removes broken entries |
-| `hub diff <hubId>` | Cache vs remote catalog |
-| `hub search <query>` | Search aliases/descriptions |
 
 ## Files
 

@@ -17,11 +17,7 @@ Reference for the **Vorlaxen Agent Skills loader** — [@vorlaxen-labs/agent-ski
 | [`add`](commands/add.md) | Integrate skills from a GitHub repo, hub, or local path |
 | [`hub`](commands/hub.md) | Subscribe to skill hubs and bulk install/update |
 | [`remove`](commands/remove.md) | Remove selected skills |
-| [`status`](commands/status.md) | Summary of health, drift, and suggested actions |
-| [`diff`](commands/diff.md) | Compare installed files to the latest snapshot |
 | [`uninstall`](commands/uninstall.md) | Remove all installed agent skill files |
-| [`completion`](commands/completion.md) | Shell tab completion (bash, zsh, fish) |
-| [`telemetry`](commands/telemetry.md) | Persistent anonymous telemetry on/off |
 
 ## Concepts
 
@@ -29,7 +25,6 @@ Reference for the **Vorlaxen Agent Skills loader** — [@vorlaxen-labs/agent-ski
 - [Conflicts and manifest](conflicts-and-manifest.md) — merge strategies, platform manifest, lock file
 - [JSON Schemas](schemas/README.md) — `manifest.json` and `skills-lock.json` (draft 2020-12)
 - [Remote source and cache](remote-and-cache.md) — bundled snapshot vs GitHub, response cache
-- [Telemetry](telemetry.md) — anonymous usage events and opt-out
 - [Manual install](manual-install.md) — copy files without the CLI
 
 ## Content reference

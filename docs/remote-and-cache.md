@@ -15,7 +15,7 @@ npx @vorlaxen-labs/agent-skills init --remote=main
 npx @vorlaxen-labs/agent-skills update --remote=main
 ```
 
-The remote ref is stored in the manifest so later `update` and `diff` calls use the same source unless overridden.
+The remote ref is stored in the manifest so later `update` and `doctor` calls use the same source unless overridden.
 
 Repository: [vorlaxen-labs/Agent-Skills](https://github.com/vorlaxen-labs/Agent-Skills) on GitHub.
 
@@ -28,7 +28,7 @@ Bypass the cache for a single run:
 ```bash
 npx @vorlaxen-labs/agent-skills init --no-cache
 npx @vorlaxen-labs/agent-skills update --no-cache
-npx @vorlaxen-labs/agent-skills diff --no-cache
+npx @vorlaxen-labs/agent-skills doctor --no-cache
 ```
 
 ## Rate limits

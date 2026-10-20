@@ -50,9 +50,8 @@ const COMMAND_EXTRAS: Record<
     examples: [
       "agent-skills hub add vorlaxen-skills-hub",
       "agent-skills hub list",
-      "agent-skills hub search typescript",
       "agent-skills hub install vorlaxen-skills-hub -s bar-js",
-      "agent-skills hub update --all",
+      "agent-skills hub update vorlaxen-skills-hub --skills",
     ],
   },
   "hub add": {
@@ -221,7 +220,6 @@ Global options (all commands):
 
   -V, --version       Print package version
   -h, --help          Short command-specific help (Commander)
-  --no-telemetry      Disable anonymous usage telemetry for this run
 
 Common project flags (init, update, add, doctor, …):
 
@@ -288,7 +286,7 @@ Project files
   agent-skills-hubs.json          Hub subscriptions (user config or --project in cwd)
   agent-skills.hub.json           Hub catalog (in the hub repo; cached locally)
 
-Doctor, status, and diff compare manifest snapshots and on-disk files to detect drift.
+Doctor compares manifest snapshots and on-disk files to detect drift.
 Remove/uninstall targets differ: remove drops selected skills; uninstall removes the
 Vorlaxen-managed install layout.
 `);
@@ -304,13 +302,11 @@ Typical workflows
 
   Hub-based team catalog:
     agent-skills hub add vorlaxen-skills-hub
-    agent-skills hub search react
+    agent-skills hub list --skills
     agent-skills hub install vorlaxen-skills-hub -s skill-alias
 
   Maintenance:
-    agent-skills status
     agent-skills doctor --strict
-    agent-skills diff
     agent-skills update
     agent-skills doctor --fix
 

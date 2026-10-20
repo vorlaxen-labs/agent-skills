@@ -37,6 +37,6 @@ Invalid `--platform` or `--skills` values are rejected with a list of available 
 | Check health | [`doctor`](commands/doctor.md) |
 | Update skills | [`update`](commands/update.md) |
 | Add more skills | [`add`](commands/add.md) |
-| See drift | [`diff`](commands/diff.md) or [`status`](commands/status.md) |
+| See drift | [`doctor`](commands/doctor.md) |
 
 See [init](commands/init.md) for all flags, [conflicts and manifest](conflicts-and-manifest.md) when agent files already exist, and [remote source and cache](remote-and-cache.md) to pull from GitHub instead of the bundled snapshot.

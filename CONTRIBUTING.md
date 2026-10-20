@@ -2,6 +2,8 @@
 
 Thank you for improving Vorlaxen Agent Skills.
 
+**Community:** [Welcome / FAQ](https://github.com/vorlaxen-labs/agent-skills/discussions/1) · [Q&A](https://github.com/vorlaxen-labs/agent-skills/discussions/categories/q-a) · [Issue templates](https://github.com/vorlaxen-labs/agent-skills/issues/new/choose) · [SECURITY.md](SECURITY.md)
+
 This repository is primarily a **loader CLI** (`@vorlaxen-labs/agent-skills`) plus **bundled global engineering standards**. Domain skills, audits, and team-specific modules belong in **separate GitHub repositories** (or hubs), not in this tree.
 
 **Skill authoring format:** [SKILL-SPEC.md](SKILL-SPEC.md)
